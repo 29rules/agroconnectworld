@@ -1,0 +1,108 @@
+
+name: ${PROJECT_NAME:-agroconnect}
+
+networks:
+  web:
+  internal:
+
+volumes:
+  pg_data:
+  minio_data:
+
+services:
+  # ───────────────────────── nginx (edge) ─────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: edge
+    depends_on:
+      - frontend
+      # - gateway   # enable when backend gateway is ready
+    ports:
+      - "${NGINX_HTTP_PORT:-8080}:80"
+    volumes:
+      # ops/nginx/default.conf defines proxy to frontend (& /api once enabled)
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks: [web, internal]
+    # Healthcheck details will be added in AC-42
+    # healthcheck:
+    #   test: ["CMD-SHELL", "wget -qO- http://localhost/health || exit 1"]
+    #   interval: 10s
+    #   timeout: 3s
+    #   retries: 5
+
+  # ──────────────────────── frontend (React) ───────────────────────
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    environment:
+      - NODE_ENV=production
+    expose:
+      - "8081"     # internal port served by nginx
+    networks: [internal]
+    # healthcheck:
+    #   test: ["CMD-SHELL", "wget -qO- http://localhost:8081 || exit 1"]
+    #   interval: 10s
+    #   timeout: 3s
+    #   retries: 5
+
+  # ───────────────────── gateway (Spring Boot) ─────────────────────
+  # Enable this after AC-41 when the gateway Dockerfile/app exists
+  # gateway:
+  #   build:
+  #     context: ../backend/gateway
+  #     dockerfile: Dockerfile
+  #   container_name: gateway
+  #   environment:
+  #     - SERVER_PORT=${GATEWAY_PORT:-8080}
+  #   expose:
+  #     - "${GATEWAY_PORT:-8080}"
+  #   networks: [internal]
+  #   # healthcheck:
+  #   #   test: ["CMD", "curl", "-f", "http://localhost:${GATEWAY_PORT:-8080}/actuator/health"]
+  #   #   interval: 10s
+  #   #   timeout: 5s
+  #   #   retries: 10
+  #   profiles: ["api"]
+
+  # ────────────────────────── postgres (db) ─────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-agro}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-agro_pass}
+      - POSTGRES_DB=${POSTGRES_DB:-agro_master}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks: [internal]
+    profiles: ["db"]
+
+  # ─────────────────────────── redis (cache) ────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    networks: [internal]
+    profiles: ["cache"]
+
+  # ────────────────────────── minio (object) ────────────────────────
+  minio:
+    image: quay.io/minio/minio
+    container_name: minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-agroadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-agroadminpass}
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+    networks: [internal]
+    profiles: ["storage"]
+
