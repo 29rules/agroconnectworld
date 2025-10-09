@@ -1,0 +1,60 @@
+# ========================
+# OS / Editor Junk
+# ========================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+*.iml
+
+# ========================
+# Node / React (frontend)
+# ========================
+/frontend/node_modules/
+/frontend/build/
+/frontend/.next/
+/frontend/dist/
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+
+# ========================
+# Java / Spring Boot (backend)
+# ========================
+/backend/target/
+/backend/build/
+/backend/.gradle/
+/backend/.mvn/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+/backend/.env
+
+# ========================
+# Python (if any ops scripts)
+# ========================
+__pycache__/
+/*.py[cod]
+*$py.class
+
+# ========================
+# Docker
+# ========================
+/ops/data/
+/ops/logs/
+/ops/tmp/
+/ops/.env
+
+# ========================
+# Misc
+# ========================
+*.log
+*.out
+*.bak
+*.tmp
+
