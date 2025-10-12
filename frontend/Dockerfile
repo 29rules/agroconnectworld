@@ -14,7 +14,7 @@ RUN npm run build
 
 #---------runtime stage (nginx) --------------
 FROM nginx:alpine
-
+RUN apk add --no-cache curl
 #Copy built assets from vite (dist) to nginx html root
 COPY --from=build /app/dist/ /usr/share/nginx/html
 
