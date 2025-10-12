@@ -4,34 +4,34 @@ FROM node:20-alpine AS build
 WORKDIR /app
 
 
-#----Faster installs by caching deps----
-COPY packgae*.json ./
-RUN if [ -f package.json ]; then npm ci; else echo "No package.json yet"; fi
+#Install deps (dev deps needed for vite)
+COPY package*.json ./
+RUN npm ci --include=dev
 
-# ---Copy source and build (handles vite, CRA, Next static export)
-
-Copy . .
-
-# For vite /cra this creates /app/dist or /app/build Run build (ignore if build script missing)
-
-RUN if [ -f package.json ]; then \
-
-      npm run build || echo "No build script yet"; \
-    else \
-      echo "No package.json to build"; \
-     fi
+# ---Copy source and build
+COPY . .
+RUN npm run build
 
 #---------runtime stage (nginx) --------------
 FROM nginx:alpine
-RUN printf "server { \
-    listen 8081; \
-    root /usr/share/nginx/html; \
-    index index.html; \
-    location / { try_files \$uri /index.html; } \
-    }" > /etc/nginx/conf.d/default.conf
 
-CMD ["nginx", "-g", "daemon off;"]
+#Copy built assets from vite (dist) to nginx html root
+COPY --from=build /app/dist/ /usr/share/nginx/html
+
+# Single nginx config listening on 8081 (SPA fallback)
+RUN cat > /etc/nginx/conf.d/default.conf <<'NGINX'
+server {
+  listen 8081;
+  root /usr/share/nginx/html;
+  index index.html;
+
+  location / {
+    try_files $uri /index.html;
+  }
+}
+NGINX
+
+
 
 EXPOSE 8081
-RUN printf "server { listen 8081; root /usr/share/nginx/html; index index.html; try_files \$uri /index.html; }" > /etc/nginx/conf.d/default.conf
 CMD ["nginx", "-g", "daemon off;"]
