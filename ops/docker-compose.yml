@@ -1,13 +1,12 @@
-
 name: ${PROJECT_NAME:-agroconnect}
 
 networks:
-  web:
-  internal:
+  web: {}
+  internal: {}
 
 volumes:
-  pg_data:
-  minio_data:
+  pg_data: {}
+  minio_data: {}
 
 services:
   # ───────────────────────── nginx (edge) ─────────────────────────
@@ -16,19 +15,18 @@ services:
     container_name: edge_service
     depends_on:
       - frontend
-      # - gateway   # enable when backend gateway is ready
+      # - gateway   # enable when backend is running (profile: api)
     ports:
       - "${NGINX_HTTP_PORT:-8080}:80"
     volumes:
-      # ops/nginx/default.conf defines proxy to frontend (& /api once enabled)
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     networks: [web, internal]
-    # Healthcheck details will be added in AC-42
-    # healthcheck:
-    #   test: ["CMD-SHELL", "wget -qO- http://localhost/health || exit 1"]
-    #   interval: 10s
-    #   timeout: 3s
-    #   retries: 5
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
 
   # ──────────────────────── frontend (React) ───────────────────────
   frontend:
@@ -39,32 +37,35 @@ services:
     environment:
       - NODE_ENV=production
     expose:
-      - "8081"     # internal port served by nginx
+      - "8081"   # internal port served by edge
     networks: [internal]
-    # healthcheck:
-    #   test: ["CMD-SHELL", "wget -qO- http://localhost:8081 || exit 1"]
-    #   interval: 10s
-    #   timeout: 3s
-    #   retries: 5
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8081 || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
 
   # ───────────────────── gateway (Spring Boot) ─────────────────────
-  # Enable this after AC-41 when the gateway Dockerfile/app exists
-  # gateway:
-  #   build:
-  #     context: ../backend/gateway
-  #     dockerfile: Dockerfile
-  #   container_name: gateway_service
-  #   environment:
-  #     - SERVER_PORT=${GATEWAY_PORT:-8080}
-  #   expose:
-  #     - "${GATEWAY_PORT:-8080}"
-  #   networks: [internal]
-  #   # healthcheck:
-  #   #   test: ["CMD", "curl", "-f", "http://localhost:${GATEWAY_PORT:-8080}/actuator/health"]
-  #   #   interval: 10s
-  #   #   timeout: 5s
-  #   #   retries: 10
-  #   profiles: ["api"]
+  # Enable with: docker compose --profile api up -d
+  gateway:
+    build:
+      context: ../backend/gateway
+      dockerfile: Dockerfile
+    container_name: gateway_service
+    environment:
+      - SERVER_PORT=${GATEWAY_PORT:-8080}
+      - GATEWAY_PORT=${GATEWAY_PORT:-8080}
+    expose:
+      - "${GATEWAY_PORT:-8080}"
+    networks: [internal]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:${GATEWAY_PORT:-8080}/actuator/health || curl -sf http://localhost:${GATEWAY_PORT:-8080}/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    profiles: ["api"]
+    restart: unless-stopped
 
   # ────────────────────────── postgres (db) ─────────────────────────
   postgres:
@@ -80,6 +81,7 @@ services:
       - pg_data:/var/lib/postgresql/data
     networks: [internal]
     profiles: ["db"]
+    restart: unless-stopped
 
   # ─────────────────────────── redis (cache) ────────────────────────
   redis:
@@ -89,6 +91,7 @@ services:
       - "${REDIS_PORT:-6379}:6379"
     networks: [internal]
     profiles: ["cache"]
+    restart: unless-stopped
 
   # ────────────────────────── minio (object) ────────────────────────
   minio:
@@ -105,4 +108,4 @@ services:
       - minio_data:/data
     networks: [internal]
     profiles: ["storage"]
-
+    restart: unless-stopped
