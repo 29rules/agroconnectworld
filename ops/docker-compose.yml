@@ -13,7 +13,7 @@ services:
   # ───────────────────────── nginx (edge) ─────────────────────────
   nginx:
     image: nginx:alpine
-    container_name: edge
+    container_name: edge_service
     depends_on:
       - frontend
       # - gateway   # enable when backend gateway is ready
@@ -35,7 +35,7 @@ services:
     build:
       context: ../frontend
       dockerfile: Dockerfile
-    container_name: frontend
+    container_name: frontend_service
     environment:
       - NODE_ENV=production
     expose:
@@ -53,7 +53,7 @@ services:
   #   build:
   #     context: ../backend/gateway
   #     dockerfile: Dockerfile
-  #   container_name: gateway
+  #   container_name: gateway_service
   #   environment:
   #     - SERVER_PORT=${GATEWAY_PORT:-8080}
   #   expose:
@@ -69,7 +69,7 @@ services:
   # ────────────────────────── postgres (db) ─────────────────────────
   postgres:
     image: postgres:16-alpine
-    container_name: postgres
+    container_name: postgres_service
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-agro}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-agro_pass}
@@ -84,7 +84,7 @@ services:
   # ─────────────────────────── redis (cache) ────────────────────────
   redis:
     image: redis:7-alpine
-    container_name: redis
+    container_name: redis_service
     ports:
       - "${REDIS_PORT:-6379}:6379"
     networks: [internal]
@@ -93,7 +93,7 @@ services:
   # ────────────────────────── minio (object) ────────────────────────
   minio:
     image: quay.io/minio/minio
-    container_name: minio
+    container_name: minio_service
     command: server /data --console-address ":9001"
     environment:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER:-agroadmin}
