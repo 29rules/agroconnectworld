@@ -15,7 +15,7 @@ services:
     container_name: edge_service
     depends_on:
       - frontend
-      # - gateway   # enable when backend is running (profile: api)
+      - gateway   # enable when backend is running (profile: api)
     ports:
       - "${NGINX_HTTP_PORT:-8080}:80"
     volumes:
@@ -40,7 +40,7 @@ services:
       - "8081"   # internal port served by edge
     networks: [internal]
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8081 || exit 1"]
+      test: ["CMD-SHELL", "curl -sf http://localhost:8081 > /dev/null || exit 1"]
       interval: 10s
       timeout: 3s
       retries: 5
@@ -56,11 +56,21 @@ services:
     environment:
       - SERVER_PORT=${GATEWAY_PORT:-8080}
       - GATEWAY_PORT=${GATEWAY_PORT:-8080}
+      # DB connection (Spring will pick these via application.properties)
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-agro_master}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-agro}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-agro_pass}
+      # Redis host/port (Spring Data Redis)
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=${REDIS_PORT:-6379}
+    depends_on:
+      - postgres
+      - redis
     expose:
       - "${GATEWAY_PORT:-8080}"
     networks: [internal]
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:${GATEWAY_PORT:-8080}/actuator/health || curl -sf http://localhost:${GATEWAY_PORT:-8080}/actuator/health || exit 1"]
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/actuator/health >/dev/null || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -80,6 +90,11 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
     networks: [internal]
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-agro} -d ${POSTGRES_DB:-agro_master}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
     profiles: ["db"]
     restart: unless-stopped
 
@@ -87,9 +102,15 @@ services:
   redis:
     image: redis:7-alpine
     container_name: redis_service
+    command: ["redis-server", "--appendonly", "no"]
     ports:
       - "${REDIS_PORT:-6379}:6379"
     networks: [internal]
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 10
     profiles: ["cache"]
     restart: unless-stopped
 
@@ -107,5 +128,10 @@ services:
     volumes:
       - minio_data:/data
     networks: [internal]
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fsS http://localhost:9000/minio/health/ready || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
     profiles: ["storage"]
     restart: unless-stopped
