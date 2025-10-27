@@ -27,8 +27,14 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
       - name: Install
+        if: runner.os !='Windows'
         run: |
-          if (Test-Path "package.json") { npm ci } else { Write-Host "no frontend yet" }
+          if [ -f package.json ]; then npm ci; else echo "no frontend yet"; fi
+      - name: Install
+        if: runner.os == 'Windows'
+        run: |
+            if (Test-Path "package.json") { npm ci } else { Write-Host "no frontend yet" }
+        shell: pwsh
       - name: Build
         run: |
           if [ -f package.json ]; then npm run build; else echo "skip build"; fi
