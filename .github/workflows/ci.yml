@@ -37,9 +37,19 @@ jobs:
           if (Test-Path "package.json") {npm ci } else { Write-Host "no frontend yet" }
         shell: pwsh
 
-      - name: Build
+      # Build
+      - name: Build (Linux & macOS)
+        if: runner.os != 'Windows'
         run: |
           if [ -f package.json ]; then npm run build; else echo "skip build"; fi
+
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          if (Test-Path "package.json") { npm run build } else { Write-Host "skip build" }
+        shell: pwsh
+
+      # Upload artifact (your unique-name fix)
       - name: Upload build artifact
         if: ${{ hashFiles('frontend/dist/**') != '' }}
         uses: actions/upload-artifact@v4
