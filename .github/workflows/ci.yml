@@ -12,10 +12,7 @@ permissions:
 jobs:
   frontend:
     name: Frontend (Vite/React)
-    runs-on: ${{matrix.os}}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macOS-latest]
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: frontend
