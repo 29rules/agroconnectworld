@@ -12,10 +12,10 @@ permissions:
 jobs:
   frontend:
     name: Frontend (Vite/React)
-    runs-on: ${{matrix.os}}
+    runs-on: ${{ martix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-latest]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
     defaults:
       run:
         working-directory: frontend
@@ -36,7 +36,7 @@ jobs:
         if: ${{ hashFiles('frontend/dist/**') != '' }}
         uses: actions/upload-artifact@v4
         with:
-          name: frontend-dist
+          name: frontend-dist-${{ matrix.os }}
           path: frontend/dist
 
   backend:
