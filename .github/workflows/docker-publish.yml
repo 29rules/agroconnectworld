@@ -30,13 +30,25 @@ jobs:
     needs: login
     steps:
       - uses: actions/checkout@v4
+
+      # ✅ Ensure Buildx uses the docker-container driver (supports GHA cache)
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          install: true
+
       - uses: docker/metadata-action@v5
         id: meta
         with:
           images: ${{ env.IMAGE_PREFIX }}-frontend
           tags: |
             type=ref,event=tag
-            type=raw,value=latest,enable={{is_default_branch}}
+            
+            # If you want 'latest' on tag builds too, remove the enable guard:
+            #type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest
+            
+
       - uses: docker/build-push-action@v6
         with:
           context: ./frontend
@@ -46,22 +58,28 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           #cache-from: type=gha
           #cache-to: type=gha,mode=max
-          cache-from: type=registry,ref=${{ steps.meta.outputs.tags }}
-          cache-to: type=inline
 
   build-gateway:
     runs-on: ubuntu-latest
     needs: login
     steps:
       - uses: actions/checkout@v4
+
+        # ✅ Buildx again for this job
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          install: true
+
       - uses: docker/metadata-action@v5
         id: meta
         with:
           images: ${{ env.IMAGE_PREFIX }}-gateway
           tags: |
             type=ref,event=tag
-            type=raw,value=latest,enable={{is_default_branch}}
-      - uses: docker/build-push-action@v6
+            type=raw,value=latest
+      - name: Build and push (gateway)
+        uses: docker/build-push-action@v6
         with:
           context: ./backend/gateway
           file: ./backend/gateway/Dockerfile
@@ -70,3 +88,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
