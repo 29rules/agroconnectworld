@@ -12,7 +12,7 @@ permissions:
 jobs:
   frontend:
     name: Frontend (Vite/React)
-    runs-on: ${{ martix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
