@@ -18,6 +18,10 @@ jobs:
   login:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
@@ -36,6 +40,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           install: true
+          driver-opts: image=moby/buildkit:master
 
       - uses: docker/metadata-action@v5
         id: meta
@@ -56,6 +61,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          provenance: false
+          sbom: false
 
   build-gateway:
     runs-on: ubuntu-latest
@@ -87,3 +94,5 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          provenance: false
+          sbom: false
