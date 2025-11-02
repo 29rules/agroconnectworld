@@ -36,8 +36,9 @@ jobs:
         if: ${{ hashFiles('frontend/dist/**') != '' }}
         uses: actions/upload-artifact@v4
         with:
-          name: frontend-dist-${{ matrix.os }}
+          name: frontend-dist-${{ matrix.os }}-${{ github.run_attempt }}
           path: frontend/dist
+          retention-days: 7
 
   backend:
     name: Backend (Spring Boot)
