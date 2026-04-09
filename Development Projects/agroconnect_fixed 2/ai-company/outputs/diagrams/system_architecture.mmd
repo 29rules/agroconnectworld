@@ -1,0 +1,137 @@
+graph TB
+    subgraph "AgroConnectWorld AI Company"
+        CTO[CTO Agent<br/>Supervisor & Approver]
+        
+        subgraph "Planning Layer"
+            PM[Product Manager Agent<br/>Epics & User Stories]
+        end
+        
+        subgraph "Architecture Layer"
+            ARCH[AI Architect Agent<br/>System Design & API Contracts]
+        end
+        
+        subgraph "Development Layer"
+            ENG[AI Engineer Agent<br/>Backend Specs]
+            FS[Full-Stack Developer Agent<br/>Frontend Specs]
+        end
+        
+        subgraph "Infrastructure Layer"
+            DEVOPS[DevOps Agent<br/>Infrastructure Analysis]
+        end
+        
+        subgraph "Quality Layer"
+            QA[QA Agent<br/>Test Plans & Collections]
+        end
+    end
+    
+    subgraph "Existing AgroConnectWorld Systems"
+        subgraph "Frontend"
+            REACT[React Frontend<br/>Bootstrap UI]
+        end
+        
+        subgraph "API Gateway"
+            GATEWAY[Spring Cloud Gateway<br/>Routing & CORS]
+        end
+        
+        subgraph "Microservices"
+            AUTH[Auth Service<br/>JWT & Security]
+            PRODUCT[Product Service<br/>Product Management]
+            SUPPLIER[Supplier Service<br/>Supplier Management]
+            ORDER[Order Service<br/>Order Processing]
+            QUOTE[Quote Service<br/>Quote Management]
+            CONTACT[Contact Service<br/>Contact Forms]
+        end
+        
+        subgraph "Infrastructure"
+            NGINX[Nginx<br/>Reverse Proxy]
+            POSTGRES[(PostgreSQL<br/>Multi-Schema)]
+            REDIS[(Redis<br/>Cache)]
+        end
+    end
+    
+    subgraph "AI Company Tools"
+        GITHUB[GitHub Reader<br/>Read-Only]
+        REPO[Repo File Reader<br/>Read-Only]
+        DOCKER[Docker Monitor<br/>Read-Only Stats]
+        LOGS[Log Reader<br/>Read-Only]
+    end
+    
+    %% Agent Hierarchy
+    CTO --> ARCH
+    CTO --> ENG
+    CTO --> DEVOPS
+    CTO --> FS
+    CTO --> QA
+    CTO --> PM
+    
+    %% Workflow Flow
+    PM -->|Product Specs| ARCH
+    ARCH -->|Architecture| ENG
+    ARCH -->|Architecture| FS
+    ENG -->|Backend Specs| QA
+    FS -->|Frontend Specs| QA
+    DEVOPS -->|Infrastructure Input| ARCH
+    QA -->|Test Plans| CTO
+    ENG -->|Implementation Specs| CTO
+    FS -->|Implementation Specs| CTO
+    ARCH -->|Architecture Review| CTO
+    PM -->|Product Review| CTO
+    
+    %% Tools Access
+    ARCH -.->|Read| GITHUB
+    ARCH -.->|Read| REPO
+    ENG -.->|Read| GITHUB
+    ENG -.->|Read| REPO
+    FS -.->|Read| GITHUB
+    FS -.->|Read| REPO
+    DEVOPS -.->|Read| DOCKER
+    DEVOPS -.->|Read| LOGS
+    DEVOPS -.->|Read| REPO
+    
+    %% Zero-Impact Boundary
+    CTO -.->|Specifications Only| GATEWAY
+    ARCH -.->|API Contracts| GATEWAY
+    ENG -.->|Implementation Specs| AUTH
+    ENG -.->|Implementation Specs| PRODUCT
+    FS -.->|Component Specs| REACT
+    
+    %% Existing System Connections
+    REACT -->|HTTP| NGINX
+    NGINX -->|Proxy| GATEWAY
+    GATEWAY -->|Route| AUTH
+    GATEWAY -->|Route| PRODUCT
+    GATEWAY -->|Route| SUPPLIER
+    GATEWAY -->|Route| ORDER
+    GATEWAY -->|Route| QUOTE
+    GATEWAY -->|Route| CONTACT
+    
+    AUTH -->|JDBC| POSTGRES
+    PRODUCT -->|JDBC| POSTGRES
+    SUPPLIER -->|JDBC| POSTGRES
+    ORDER -->|JDBC| POSTGRES
+    QUOTE -->|JDBC| POSTGRES
+    CONTACT -->|JDBC| POSTGRES
+    
+    AUTH -->|Cache| REDIS
+    
+    style CTO fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px
+    style ARCH fill:#4ecdc4,stroke:#2d9cdb,stroke-width:2px
+    style ENG fill:#45b7d1,stroke:#2d9cdb,stroke-width:2px
+    style FS fill:#96ceb4,stroke:#2d9cdb,stroke-width:2px
+    style PM fill:#ffeaa7,stroke:#fdcb6e,stroke-width:2px
+    style DEVOPS fill:#a29bfe,stroke:#6c5ce7,stroke-width:2px
+    style QA fill:#fd79a8,stroke:#e84393,stroke-width:2px
+    
+    style GATEWAY fill:#74b9ff,stroke:#0984e3,stroke-width:2px
+    style AUTH fill:#55efc4,stroke:#00b894,stroke-width:2px
+    style PRODUCT fill:#55efc4,stroke:#00b894,stroke-width:2px
+    style SUPPLIER fill:#55efc4,stroke:#00b894,stroke-width:2px
+    style ORDER fill:#55efc4,stroke:#00b894,stroke-width:2px
+    style QUOTE fill:#55efc4,stroke:#00b894,stroke-width:2px
+    style CONTACT fill:#55efc4,stroke:#00b894,stroke-width:2px
+    
+    style POSTGRES fill:#fab1a0,stroke:#e17055,stroke-width:2px
+    style REDIS fill:#ff7675,stroke:#d63031,stroke-width:2px
+    style NGINX fill:#81ecec,stroke:#00cec9,stroke-width:2px
+
+

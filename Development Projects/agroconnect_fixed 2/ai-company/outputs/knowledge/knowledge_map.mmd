@@ -1,0 +1,167 @@
+graph TB
+    subgraph "Knowledge Base"
+        KB[AgroConnectWorld<br/>Knowledge Base]
+    end
+    
+    subgraph "Business Knowledge"
+        BUSINESS[Business Overview]
+        DOMAIN[Domain Models]
+        GLOSSARY[Glossary]
+    end
+    
+    subgraph "Technical Knowledge"
+        SERVICES[Service Catalog]
+        ARCH[Architecture Principles]
+        API[API Reference]
+        STANDARDS[Engineering Standards]
+    end
+    
+    subgraph "Compliance Knowledge"
+        COMPLIANCE[Compliance Rules]
+    end
+    
+    subgraph "Agents"
+        CTO[CTO Agent]
+        ARCH_AGENT[Architect Agent]
+        ENG_AGENT[Engineer Agent]
+        DEVOPS[DevOps Agent]
+        FULLSTACK[Full-Stack Agent]
+        PM[Product Manager Agent]
+        QA[QA Agent]
+        SUPERVISOR[Supervisor Agent]
+    end
+    
+    subgraph "Microservices"
+        GATEWAY[API Gateway<br/>Port 8080]
+        AUTH[Auth Service<br/>Port 8081]
+        PRODUCT[Product Service<br/>Port 8082]
+        SUPPLIER[Supplier Service<br/>Port 8083]
+        QUOTE[Quote Service<br/>Port 8084]
+        ORDER[Order Service<br/>Port 8085]
+        CONTACT[Contact Service<br/>Port 8086]
+    end
+    
+    subgraph "Frontend"
+        HOME[Home Page]
+        PRODUCTS[Products Page]
+        ABOUT[About Page]
+        CONTACT[Contact Page]
+        BUYER[Buyer Dashboard]
+        SUPPLIER_PAGE[Supplier Dashboard]
+        CART[Cart Page]
+        NEWS[News Page]
+    end
+    
+    subgraph "Tech Stack"
+        JAVA[Java 21]
+        SPRING[Spring Boot 3.x]
+        REACT[React 18+]
+        DOCKER[Docker]
+        NGINX[Nginx]
+        POSTGRES[PostgreSQL]
+    end
+    
+    %% Knowledge Base Structure
+    KB --> BUSINESS
+    KB --> DOMAIN
+    KB --> GLOSSARY
+    KB --> SERVICES
+    KB --> ARCH
+    KB --> API
+    KB --> STANDARDS
+    KB --> COMPLIANCE
+    
+    %% Agent Knowledge Usage
+    CTO --> ARCH
+    CTO --> COMPLIANCE
+    CTO --> STANDARDS
+    
+    ARCH_AGENT --> ARCH
+    ARCH_AGENT --> SERVICES
+    ARCH_AGENT --> DOMAIN
+    ARCH_AGENT --> API
+    
+    ENG_AGENT --> SERVICES
+    ENG_AGENT --> DOMAIN
+    ENG_AGENT --> API
+    ENG_AGENT --> STANDARDS
+    
+    DEVOPS --> ARCH
+    DEVOPS --> SERVICES
+    DEVOPS --> STANDARDS
+    
+    FULLSTACK --> BUSINESS
+    FULLSTACK --> API
+    FULLSTACK --> STANDARDS
+    
+    PM --> BUSINESS
+    PM --> DOMAIN
+    PM --> API
+    
+    QA --> API
+    QA --> STANDARDS
+    QA --> SERVICES
+    
+    SUPERVISOR --> COMPLIANCE
+    SUPERVISOR --> ARCH
+    SUPERVISOR --> STANDARDS
+    
+    %% Service Relationships
+    SERVICES --> GATEWAY
+    SERVICES --> AUTH
+    SERVICES --> PRODUCT
+    SERVICES --> SUPPLIER
+    SERVICES --> QUOTE
+    SERVICES --> ORDER
+    SERVICES --> CONTACT
+    
+    %% Domain Relationships
+    DOMAIN --> AUTH
+    DOMAIN --> PRODUCT
+    DOMAIN --> SUPPLIER
+    DOMAIN --> QUOTE
+    DOMAIN --> ORDER
+    DOMAIN --> CONTACT
+    
+    %% Frontend Relationships
+    BUSINESS --> HOME
+    BUSINESS --> PRODUCTS
+    BUSINESS --> ABOUT
+    BUSINESS --> CONTACT
+    BUSINESS --> BUYER
+    BUSINESS --> SUPPLIER_PAGE
+    BUSINESS --> CART
+    BUSINESS --> NEWS
+    
+    %% Tech Stack Relationships
+    ARCH --> JAVA
+    ARCH --> SPRING
+    ARCH --> REACT
+    ARCH --> DOCKER
+    ARCH --> NGINX
+    ARCH --> POSTGRES
+    
+    STANDARDS --> JAVA
+    STANDARDS --> SPRING
+    STANDARDS --> REACT
+    STANDARDS --> DOCKER
+    
+    %% API Relationships
+    API --> AUTH
+    API --> PRODUCT
+    API --> SUPPLIER
+    API --> QUOTE
+    API --> ORDER
+    API --> CONTACT
+    
+    %% Styling
+    style KB fill:#4ecdc4,stroke:#2d9cdb,stroke-width:3px
+    style BUSINESS fill:#45b7d1,stroke:#2d9cdb,stroke-width:2px
+    style SERVICES fill:#96ceb4,stroke:#2d9cdb,stroke-width:2px
+    style ARCH fill:#ffeaa7,stroke:#fdcb6e,stroke-width:2px
+    style COMPLIANCE fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
+    style CTO fill:#fd79a8,stroke:#e84393,stroke-width:2px
+    style SUPERVISOR fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
+
+
+

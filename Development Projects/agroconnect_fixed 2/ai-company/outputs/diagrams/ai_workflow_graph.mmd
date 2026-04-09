@@ -1,0 +1,108 @@
+graph LR
+    subgraph "Input"
+        VISION[Company Vision<br/>& Business Requirements]
+    end
+    
+    subgraph "Planning Workflow"
+        PM[Product Manager Agent]
+        EPIC[Epic Creation]
+        STORY[User Story Creation]
+        ACCEPT[Acceptance Criteria]
+    end
+    
+    subgraph "Architecture Workflow"
+        ARCH[AI Architect Agent]
+        DEVOPS[DevOps Agent]
+        DESIGN[System Design]
+        API[API Contracts]
+        DIAGRAM[Service Diagrams]
+    end
+    
+    subgraph "Development Workflow"
+        ENG[AI Engineer Agent]
+        FS[Full-Stack Developer Agent]
+        BACKEND[Backend Specs]
+        FRONTEND[Frontend Specs]
+        PSEUDO[Pseudo-Code]
+    end
+    
+    subgraph "Review Workflow"
+        REVIEW[CTO Agent Review]
+        ARCH_REV[AI Architect Review]
+        ENG_REV[AI Engineer Review]
+        DEVOPS_REV[DevOps Review]
+        QA_REV[QA Review]
+        APPROVAL[Final Approval]
+    end
+    
+    subgraph "Testing Workflow"
+        QA[QA Agent]
+        TEST_PLAN[Test Plans]
+        POSTMAN[Postman Collections]
+        E2E[E2E Test Specs]
+    end
+    
+    subgraph "Output"
+        SPECS[Approved Specifications]
+        DOCS[Documentation]
+        DIAGRAMS[Architecture Diagrams]
+        TESTS[Test Artifacts]
+    end
+    
+    %% Flow
+    VISION --> PM
+    PM --> EPIC
+    EPIC --> STORY
+    STORY --> ACCEPT
+    
+    ACCEPT --> ARCH
+    ARCH --> DEVOPS
+    DEVOPS --> DESIGN
+    DESIGN --> API
+    API --> DIAGRAM
+    
+    DIAGRAM --> ENG
+    DIAGRAM --> FS
+    ENG --> BACKEND
+    ENG --> PSEUDO
+    FS --> FRONTEND
+    
+    BACKEND --> REVIEW
+    FRONTEND --> REVIEW
+    PSEUDO --> REVIEW
+    
+    REVIEW --> ARCH_REV
+    REVIEW --> ENG_REV
+    REVIEW --> DEVOPS_REV
+    REVIEW --> QA_REV
+    
+    ARCH_REV --> APPROVAL
+    ENG_REV --> APPROVAL
+    DEVOPS_REV --> APPROVAL
+    QA_REV --> APPROVAL
+    
+    APPROVAL --> QA
+    QA --> TEST_PLAN
+    TEST_PLAN --> POSTMAN
+    POSTMAN --> E2E
+    
+    APPROVAL --> SPECS
+    APPROVAL --> DOCS
+    DIAGRAM --> DIAGRAMS
+    E2E --> TESTS
+    
+    %% Styling
+    style PM fill:#ffeaa7,stroke:#fdcb6e,stroke-width:2px
+    style ARCH fill:#4ecdc4,stroke:#2d9cdb,stroke-width:2px
+    style ENG fill:#45b7d1,stroke:#2d9cdb,stroke-width:2px
+    style FS fill:#96ceb4,stroke:#2d9cdb,stroke-width:2px
+    style REVIEW fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px
+    style QA fill:#fd79a8,stroke:#e84393,stroke-width:2px
+    style APPROVAL fill:#00b894,stroke:#00a085,stroke-width:3px
+    
+    style SPECS fill:#55efc4,stroke:#00b894,stroke-width:2px
+    style DOCS fill:#55efc4,stroke:#00b894,stroke-width:2px
+    style DIAGRAMS fill:#55efc4,stroke:#00b894,stroke-width:2px
+    style TESTS fill:#55efc4,stroke:#00b894,stroke-width:2px
+
+

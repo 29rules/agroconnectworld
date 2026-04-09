@@ -1,0 +1,185 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2024-11-27T20:00:00Z",
+  "total_agents": 7,
+  "agents": [
+    {
+      "name": "cto_agent",
+      "role": "Chief Technology Officer",
+      "description": "Supervises all technical agents, approves architecture and implementation decisions, generates technical documentation",
+      "class_name": "com.ai.company.agents.cto.CTOAgent",
+      "zero_impact_mode": true,
+      "capabilities": [
+        "architecture",
+        "approval",
+        "review",
+        "planning",
+        "supervision",
+        "documentation",
+        "diagrams"
+      ],
+      "responsibilities": [
+        "supervise_agents",
+        "approve_decisions",
+        "generate_documentation",
+        "create_diagrams",
+        "assess_risks",
+        "plan_sprints"
+      ]
+    },
+    {
+      "name": "supervisor_agent",
+      "role": "Chief Technology Officer",
+      "description": "Supervises all technical agents, approves architecture and implementation decisions, generates technical documentation",
+      "class_name": "com.ai.company.agents.cto.CTOAgent",
+      "zero_impact_mode": true,
+      "capabilities": [
+        "architecture",
+        "approval",
+        "review",
+        "planning",
+        "supervision",
+        "documentation",
+        "diagrams"
+      ],
+      "responsibilities": [
+        "supervise_agents",
+        "approve_decisions",
+        "generate_documentation",
+        "create_diagrams",
+        "assess_risks",
+        "plan_sprints"
+      ]
+    },
+    {
+      "name": "architect_agent",
+      "role": "AI Architect",
+      "description": "Converts business requirements into technical architecture, designs scalable microservice patterns, generates API contracts",
+      "class_name": "com.ai.company.agents.architect.ArchitectAgent",
+      "zero_impact_mode": true,
+      "capabilities": [
+        "architecture",
+        "design",
+        "api_contracts",
+        "diagrams",
+        "system_design",
+        "integration_patterns"
+      ],
+      "responsibilities": [
+        "design_architecture",
+        "generate_api_contracts",
+        "create_service_diagrams",
+        "propose_integration_patterns"
+      ]
+    },
+    {
+      "name": "engineer_agent",
+      "role": "AI Engineer",
+      "description": "Converts architecture specs into implementation outlines, generates pseudo-code, creates service layer specifications",
+      "class_name": "com.ai.company.agents.engineer.EngineerAgent",
+      "zero_impact_mode": true,
+      "capabilities": [
+        "implementation",
+        "backend",
+        "pseudo_code",
+        "service_specs",
+        "integration",
+        "database_patterns"
+      ],
+      "responsibilities": [
+        "create_implementation_specs",
+        "generate_pseudo_code",
+        "design_service_layers",
+        "specify_integration_patterns"
+      ]
+    },
+    {
+      "name": "devops_agent",
+      "role": "DevOps Specialist",
+      "description": "Analyzes infrastructure, suggests CI/CD improvements, produces deployment diagrams, monitors systems",
+      "class_name": "com.ai.company.agents.devops.DevOpsAgent",
+      "zero_impact_mode": true,
+      "capabilities": [
+        "infrastructure",
+        "deployment",
+        "docker",
+        "ci_cd",
+        "monitoring",
+        "scaling",
+        "nginx"
+      ],
+      "responsibilities": [
+        "analyze_infrastructure",
+        "suggest_cicd_improvements",
+        "create_deployment_diagrams",
+        "monitor_systems"
+      ]
+    },
+    {
+      "name": "fullstack_agent",
+      "role": "Full-Stack Developer",
+      "description": "Suggests React component implementations, designs API request flows, creates frontend-backend integration specs",
+      "class_name": "com.ai.company.agents.fullstack.FullStackAgent",
+      "zero_impact_mode": true,
+      "capabilities": [
+        "frontend",
+        "ui",
+        "react",
+        "api_integration",
+        "component_design",
+        "state_management"
+      ],
+      "responsibilities": [
+        "suggest_components",
+        "design_api_flows",
+        "create_integration_specs",
+        "propose_state_management"
+      ]
+    },
+    {
+      "name": "product_manager_agent",
+      "role": "Product Manager",
+      "description": "Converts vision into product roadmap, creates epics and user stories, defines acceptance criteria",
+      "class_name": "com.ai.company.agents.productmanager.ProductManagerAgent",
+      "zero_impact_mode": true,
+      "capabilities": [
+        "epic",
+        "user_story",
+        "requirements",
+        "prioritization",
+        "roadmap",
+        "acceptance_criteria"
+      ],
+      "responsibilities": [
+        "create_epics",
+        "create_user_stories",
+        "define_acceptance_criteria",
+        "prioritize_features"
+      ]
+    },
+    {
+      "name": "qa_agent",
+      "role": "QA Specialist",
+      "description": "Creates test plans, designs Postman collections, specifies E2E testing flows, ensures test coverage",
+      "class_name": "com.ai.company.agents.qa.QAAgent",
+      "zero_impact_mode": true,
+      "capabilities": [
+        "testing",
+        "test_plan",
+        "postman",
+        "e2e",
+        "quality_assurance",
+        "test_coverage"
+      ],
+      "responsibilities": [
+        "create_test_plans",
+        "design_postman_collections",
+        "specify_e2e_flows",
+        "ensure_test_coverage"
+      ]
+    }
+  ]
+}
+
+
+

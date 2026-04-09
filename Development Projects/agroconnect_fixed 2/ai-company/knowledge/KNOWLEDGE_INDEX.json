@@ -1,0 +1,309 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2024-11-27T20:00:00Z",
+  "knowledge_base": {
+    "name": "AgroConnectWorld AI Company Knowledge Base",
+    "description": "Source of truth for all AI agents working on AgroConnectWorld",
+    "purpose": "Provide comprehensive knowledge about business, architecture, services, and standards"
+  },
+  "documents": [
+    {
+      "id": "business_overview",
+      "title": "Business Overview",
+      "file": "business_overview.md",
+      "description": "Company mission, business model, user roles, and business domains",
+      "topics": [
+        "mission",
+        "business_model",
+        "user_roles",
+        "business_domains",
+        "workflows",
+        "market_focus"
+      ],
+      "target_audience": ["all_agents", "product_manager", "architect"]
+    },
+    {
+      "id": "service_catalog",
+      "title": "Service Catalog",
+      "file": "service_catalog.md",
+      "description": "Complete catalog of all microservices, their endpoints, and responsibilities",
+      "topics": [
+        "microservices",
+        "api_gateway",
+        "auth_service",
+        "product_service",
+        "supplier_service",
+        "quote_service",
+        "order_service",
+        "contact_service",
+        "endpoints",
+        "database_schemas"
+      ],
+      "target_audience": ["all_agents", "architect", "engineer", "devops"]
+    },
+    {
+      "id": "domain_models",
+      "title": "Domain Models",
+      "file": "domain_models.md",
+      "description": "Entity relationships, domain models, and business rules",
+      "topics": [
+        "entities",
+        "relationships",
+        "user",
+        "product",
+        "supplier",
+        "quote",
+        "order",
+        "business_rules",
+        "data_integrity"
+      ],
+      "target_audience": ["all_agents", "architect", "engineer"]
+    },
+    {
+      "id": "architecture_principles",
+      "title": "Architecture Principles",
+      "file": "architecture_principles.md",
+      "description": "Core architecture principles, design patterns, and technology stack",
+      "topics": [
+        "microservices",
+        "api_gateway",
+        "database_per_service",
+        "restful_communication",
+        "containerization",
+        "technology_stack",
+        "deployment",
+        "security",
+        "scalability"
+      ],
+      "target_audience": ["all_agents", "architect", "cto", "devops"]
+    },
+    {
+      "id": "compliance_rules",
+      "title": "Compliance Rules",
+      "file": "compliance_rules.md",
+      "description": "Zero-impact mode rules, agent constraints, and compliance enforcement",
+      "topics": [
+        "zero_impact_mode",
+        "no_code_modifications",
+        "no_configuration_changes",
+        "specification_only",
+        "agent_constraints",
+        "workflow_compliance",
+        "validation",
+        "enforcement"
+      ],
+      "target_audience": ["all_agents", "supervisor", "cto"]
+    },
+    {
+      "id": "engineering_standards",
+      "title": "Engineering Standards",
+      "file": "engineering_standards.md",
+      "description": "Code standards, API design, testing, documentation, and best practices",
+      "topics": [
+        "java_standards",
+        "react_standards",
+        "api_design",
+        "database_standards",
+        "testing",
+        "documentation",
+        "security",
+        "performance",
+        "deployment"
+      ],
+      "target_audience": ["all_agents", "engineer", "fullstack", "qa"]
+    },
+    {
+      "id": "api_reference",
+      "title": "API Reference",
+      "file": "api_reference.md",
+      "description": "Complete API reference for all microservices",
+      "topics": [
+        "authentication",
+        "auth_api",
+        "product_api",
+        "supplier_api",
+        "quote_api",
+        "order_api",
+        "contact_api",
+        "error_codes",
+        "rate_limiting"
+      ],
+      "target_audience": ["all_agents", "engineer", "fullstack", "qa"]
+    },
+    {
+      "id": "glossary",
+      "title": "Glossary",
+      "file": "glossary.md",
+      "description": "Definitions of terms and concepts used in AgroConnectWorld",
+      "topics": [
+        "terminology",
+        "definitions",
+        "acronyms",
+        "concepts"
+      ],
+      "target_audience": ["all_agents"]
+    }
+  ],
+  "topics_index": {
+    "microservices": ["service_catalog", "architecture_principles"],
+    "authentication": ["service_catalog", "api_reference", "engineering_standards"],
+    "products": ["business_overview", "service_catalog", "domain_models", "api_reference"],
+    "orders": ["business_overview", "service_catalog", "domain_models", "api_reference"],
+    "suppliers": ["business_overview", "service_catalog", "domain_models", "api_reference"],
+    "quotes": ["business_overview", "service_catalog", "domain_models", "api_reference"],
+    "zero_impact": ["compliance_rules"],
+    "architecture": ["architecture_principles", "service_catalog"],
+    "api": ["api_reference", "engineering_standards"],
+    "frontend": ["business_overview", "engineering_standards"],
+    "backend": ["service_catalog", "architecture_principles", "engineering_standards"],
+    "database": ["domain_models", "architecture_principles", "engineering_standards"],
+    "docker": ["architecture_principles", "engineering_standards"],
+    "react": ["engineering_standards", "business_overview"],
+    "spring_boot": ["service_catalog", "architecture_principles", "engineering_standards"],
+    "postgresql": ["service_catalog", "architecture_principles"],
+    "nginx": ["architecture_principles", "engineering_standards"]
+  },
+  "agent_usage": {
+    "cto_agent": [
+      "architecture_principles",
+      "compliance_rules",
+      "engineering_standards"
+    ],
+    "architect_agent": [
+      "architecture_principles",
+      "service_catalog",
+      "domain_models",
+      "api_reference"
+    ],
+    "engineer_agent": [
+      "service_catalog",
+      "domain_models",
+      "api_reference",
+      "engineering_standards"
+    ],
+    "devops_agent": [
+      "architecture_principles",
+      "service_catalog",
+      "engineering_standards"
+    ],
+    "fullstack_agent": [
+      "business_overview",
+      "api_reference",
+      "engineering_standards"
+    ],
+    "product_manager_agent": [
+      "business_overview",
+      "domain_models",
+      "api_reference"
+    ],
+    "qa_agent": [
+      "api_reference",
+      "engineering_standards",
+      "service_catalog"
+    ],
+    "supervisor_agent": [
+      "compliance_rules",
+      "architecture_principles",
+      "engineering_standards"
+    ]
+  },
+  "frontend_pages": {
+    "home": {
+      "description": "Landing page with company overview and featured products",
+      "components": ["Hero", "FeaturedProducts", "AboutSection"]
+    },
+    "products": {
+      "description": "Product catalog page with filtering and search",
+      "components": ["ProductList", "ProductCard", "FilterBar", "SearchBar"]
+    },
+    "about": {
+      "description": "Company information and mission",
+      "components": ["AboutContent", "TeamSection", "ValuesSection"]
+    },
+    "contact": {
+      "description": "Contact form for customer inquiries",
+      "components": ["ContactForm", "ContactInfo"]
+    },
+    "buyer": {
+      "description": "Buyer dashboard with quote requests and orders",
+      "components": ["BuyerDashboard", "QuoteRequests", "Orders", "Profile"]
+    },
+    "supplier": {
+      "description": "Supplier dashboard with product listings and orders",
+      "components": ["SupplierDashboard", "ProductListings", "Orders", "Profile"]
+    },
+    "cart": {
+      "description": "Shopping cart for product selection",
+      "components": ["CartItems", "CheckoutButton", "CartSummary"]
+    },
+    "news": {
+      "description": "News and updates page",
+      "components": ["NewsList", "NewsCard", "NewsDetail"]
+    }
+  },
+  "tech_stack": {
+    "backend": {
+      "language": "Java 21",
+      "framework": "Spring Boot 3.x",
+      "gateway": "Spring Cloud Gateway",
+      "security": "Spring Security + JWT",
+      "persistence": "Spring Data JPA + Hibernate",
+      "database": "PostgreSQL",
+      "build_tool": "Maven"
+    },
+    "frontend": {
+      "framework": "React 18+",
+      "build_tool": "Vite",
+      "ui_library": "Bootstrap 5",
+      "routing": "React Router",
+      "http_client": "Axios"
+    },
+    "infrastructure": {
+      "containerization": "Docker",
+      "orchestration": "Docker Compose",
+      "reverse_proxy": "Nginx",
+      "database": "PostgreSQL",
+      "cache": "Redis (future)"
+    }
+  },
+  "microservices": {
+    "gateway": {
+      "port": 8080,
+      "schema": null,
+      "purpose": "API routing and cross-cutting concerns"
+    },
+    "auth_service": {
+      "port": 8081,
+      "schema": "auth_service",
+      "purpose": "User authentication and authorization"
+    },
+    "product_service": {
+      "port": 8082,
+      "schema": "product_service",
+      "purpose": "Product catalog management"
+    },
+    "supplier_service": {
+      "port": 8083,
+      "schema": "supplier_service",
+      "purpose": "Supplier management"
+    },
+    "quote_service": {
+      "port": 8084,
+      "schema": "quote_service",
+      "purpose": "Quote request and response management"
+    },
+    "order_service": {
+      "port": 8085,
+      "schema": "order_service",
+      "purpose": "Order management and fulfillment"
+    },
+    "contact_service": {
+      "port": 8086,
+      "schema": "contact_service",
+      "purpose": "Contact form and inquiry management"
+    }
+  }
+}
+
+
+

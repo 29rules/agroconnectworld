@@ -1,0 +1,75 @@
+graph TB
+    subgraph "Agent Interaction"
+        AGENT[AI Agent]
+        ACTION[Agent Action/Decision]
+    end
+    
+    subgraph "Memory Service Layer"
+        MEMORY_SERVICE[AgentMemoryService]
+        PROMPT_BUILDER[MemoryPromptBuilder]
+    end
+    
+    subgraph "Embedding Layer"
+        EMBEDDING[EmbeddingService]
+    end
+    
+    subgraph "Storage Layer"
+        VECTOR_STORE[VectorMemoryStore]
+        INDEXES[Indexes<br/>Agent/Session/Category]
+    end
+    
+    subgraph "Knowledge Base"
+        KB_LOADER[KnowledgeBaseLoader]
+        MD_FILES[Markdown Files<br/>/knowledge/*.md]
+    end
+    
+    subgraph "Memory Operations"
+        SAVE[Save Memory]
+        RECALL[Recall Memories]
+        SEARCH[Semantic Search]
+    end
+    
+    %% Save Flow
+    AGENT -->|Creates Memory| ACTION
+    ACTION -->|Save| MEMORY_SERVICE
+    MEMORY_SERVICE -->|Generate Embedding| EMBEDDING
+    EMBEDDING -->|Store| VECTOR_STORE
+    VECTOR_STORE -->|Index| INDEXES
+    VECTOR_STORE -->|Store Entry| SAVE
+    
+    %% Recall Flow
+    AGENT -->|Query| MEMORY_SERVICE
+    MEMORY_SERVICE -->|Embed Query| EMBEDDING
+    EMBEDDING -->|Search| VECTOR_STORE
+    VECTOR_STORE -->|Filter| INDEXES
+    VECTOR_STORE -->|Return Similar| RECALL
+    RECALL -->|Relevant Memories| MEMORY_SERVICE
+    MEMORY_SERVICE -->|Return| AGENT
+    
+    %% Prompt Building Flow
+    AGENT -->|Build Prompt| PROMPT_BUILDER
+    PROMPT_BUILDER -->|Recall Memories| MEMORY_SERVICE
+    MEMORY_SERVICE -->|Search| SEARCH
+    SEARCH -->|Results| PROMPT_BUILDER
+    PROMPT_BUILDER -->|Enhanced Prompt| AGENT
+    
+    %% Knowledge Base Flow
+    MD_FILES -->|Load| KB_LOADER
+    KB_LOADER -->|Save to Memory| MEMORY_SERVICE
+    MEMORY_SERVICE -->|Store| VECTOR_STORE
+    
+    %% Knowledge in Prompts
+    PROMPT_BUILDER -->|Query Knowledge| MEMORY_SERVICE
+    MEMORY_SERVICE -->|Search Knowledge| VECTOR_STORE
+    VECTOR_STORE -->|Knowledge Results| PROMPT_BUILDER
+    
+    %% Styling
+    style AGENT fill:#4ecdc4,stroke:#2d9cdb,stroke-width:2px
+    style MEMORY_SERVICE fill:#45b7d1,stroke:#2d9cdb,stroke-width:2px
+    style EMBEDDING fill:#96ceb4,stroke:#2d9cdb,stroke-width:2px
+    style VECTOR_STORE fill:#ffeaa7,stroke:#fdcb6e,stroke-width:2px
+    style PROMPT_BUILDER fill:#fd79a8,stroke:#e84393,stroke-width:2px
+    style KB_LOADER fill:#a29bfe,stroke:#6c5ce7,stroke-width:2px
+
+
+

@@ -1,0 +1,151 @@
+{
+  "tools": [
+    {
+      "name": "GitHubReaderTool",
+      "class": "com.ai.company.tools.github.GitHubReaderTool",
+      "type": "read-only",
+      "description": "Read-only access to GitHub repository for codebase analysis",
+      "capabilities": [
+        "readFile(String filePath) - Read file contents",
+        "listDirectory(String directoryPath) - List files in directory",
+        "getRepositoryStructure(String basePath) - Get directory tree"
+      ],
+      "limitations": [
+        "Cannot create commits",
+        "Cannot push changes",
+        "Cannot create branches",
+        "Cannot modify repository"
+      ],
+      "used_by": [
+        "CTOAgent",
+        "ArchitectAgent",
+        "EngineerAgent",
+        "FullStackAgent"
+      ],
+      "access_level": "read-only"
+    },
+    {
+      "name": "FileSystemReaderTool",
+      "class": "com.ai.company.tools.filesystem.FileSystemReaderTool",
+      "type": "read-only",
+      "description": "Read-only access to local filesystem for file analysis",
+      "capabilities": [
+        "readFile(String filePath) - Read file contents",
+        "listFiles(String directoryPath) - List files in directory",
+        "fileExists(String filePath) - Check if file exists",
+        "getFileMetadata(String filePath) - Get file metadata"
+      ],
+      "limitations": [
+        "Cannot modify files",
+        "Cannot create files",
+        "Cannot delete files"
+      ],
+      "used_by": [
+        "CTOAgent",
+        "ArchitectAgent",
+        "EngineerAgent",
+        "FullStackAgent",
+        "DevOpsAgent",
+        "QAAgent"
+      ],
+      "access_level": "read-only"
+    },
+    {
+      "name": "DockerStatsTool",
+      "class": "com.ai.company.tools.docker.DockerStatsTool",
+      "type": "read-only",
+      "description": "Read-only monitoring of Docker containers and infrastructure",
+      "capabilities": [
+        "readDockerCompose() - Read Docker Compose configuration",
+        "listContainers() - List running containers",
+        "getContainerStats(String containerName) - Get container stats",
+        "readNginxConfig() - Read Nginx configuration",
+        "checkServiceHealth() - Check service health"
+      ],
+      "limitations": [
+        "Cannot start/stop containers",
+        "Cannot modify Docker configurations",
+        "Cannot create containers",
+        "Cannot modify networks or volumes"
+      ],
+      "used_by": [
+        "CTOAgent",
+        "DevOpsAgent"
+      ],
+      "access_level": "read-only"
+    },
+    {
+      "name": "LogReaderTool",
+      "class": "com.ai.company.tools.logs.LogReaderTool",
+      "type": "read-only",
+      "description": "Read-only access to application and container logs",
+      "capabilities": [
+        "readContainerLogs(String containerName, int lines) - Read container logs",
+        "readContainerLogsFiltered(String containerName, String filter, int lines) - Read filtered logs",
+        "readLogFile(String logFilePath) - Read log file from filesystem",
+        "searchErrors(String containerName, int lines) - Search for errors in logs"
+      ],
+      "limitations": [
+        "Cannot modify logs",
+        "Cannot delete logs",
+        "Cannot create log entries"
+      ],
+      "used_by": [
+        "CTOAgent",
+        "DevOpsAgent",
+        "QAAgent"
+      ],
+      "access_level": "read-only"
+    }
+  ],
+  "tool_categories": {
+    "code_analysis": [
+      "GitHubReaderTool",
+      "FileSystemReaderTool"
+    ],
+    "infrastructure_monitoring": [
+      "DockerStatsTool",
+      "LogReaderTool"
+    ]
+  },
+  "access_policies": {
+    "zero_impact_mode": {
+      "description": "All tools operate in read-only mode",
+      "enforcement": "Hard constraint - cannot be overridden",
+      "exceptions": "None"
+    },
+    "agent_permissions": {
+      "CTOAgent": [
+        "GitHubReaderTool",
+        "FileSystemReaderTool",
+        "DockerStatsTool",
+        "LogReaderTool"
+      ],
+      "ArchitectAgent": [
+        "GitHubReaderTool",
+        "FileSystemReaderTool"
+      ],
+      "EngineerAgent": [
+        "GitHubReaderTool",
+        "FileSystemReaderTool"
+      ],
+      "FullStackAgent": [
+        "GitHubReaderTool",
+        "FileSystemReaderTool"
+      ],
+      "DevOpsAgent": [
+        "DockerStatsTool",
+        "FileSystemReaderTool",
+        "LogReaderTool"
+      ],
+      "QAAgent": [
+        "FileSystemReaderTool",
+        "LogReaderTool"
+      ],
+      "ProductManagerAgent": []
+    }
+  }
+}
+
+
+

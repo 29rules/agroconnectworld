@@ -1,0 +1,114 @@
+graph TB
+    subgraph "Agent Decisions"
+        AGENT1[Architect Agent<br/>Decision]
+        AGENT2[Engineer Agent<br/>Decision]
+        AGENT3[DevOps Agent<br/>Decision]
+        AGENT4[Other Agents<br/>Decisions]
+    end
+    
+    subgraph "Supervisor Agent"
+        SUPERVISOR[Supervisor Agent<br/>Ultimate Authority]
+        
+        subgraph "Review Process"
+            PARSE[Parse Decision]
+            ZERO_IMPACT[Zero-Impact Check]
+            SAFETY[Safety Assessment]
+            CONSISTENCY[Consistency Check]
+            CONSTRAINTS[Constraint Enforcement]
+        end
+        
+        subgraph "Decision Logic"
+            EVALUATE[Evaluate All Checks]
+            DECIDE[Make Decision]
+        end
+    end
+    
+    subgraph "Decision Outcomes"
+        APPROVED[APPROVED<br/>Safe & Compliant]
+        REJECTED[REJECTED<br/>Unsafe or Violation]
+        MODIFY[MODIFICATION_REQUIRED<br/>Needs Changes]
+        REVIEW[UNDER_REVIEW<br/>Human Review Needed]
+    end
+    
+    subgraph "Override Mechanisms"
+        BLOCK[BLOCK<br/>Prevent Execution]
+        MODIFY_DECISION[MODIFY<br/>Require Changes]
+        FLAG[FLAG<br/>Mark for Review]
+    end
+    
+    subgraph "Workflow Safety"
+        WORKFLOW[Workflow Plan]
+        ASSESS[Assess Safety]
+        SAFE[SAFE<br/>Can Proceed]
+        RISKY[RISKY<br/>Proceed with Caution]
+        UNSAFE[UNSAFE<br/>Block Workflow]
+    end
+    
+    subgraph "Consistency Checking"
+        MULTI_OUTPUTS[Multiple Agent Outputs]
+        COMPARE[Compare Outputs]
+        CONFLICTS[Detect Conflicts]
+        RESOLVE[Resolve Inconsistencies]
+    end
+    
+    %% Agent to Supervisor Flow
+    AGENT1 --> SUPERVISOR
+    AGENT2 --> SUPERVISOR
+    AGENT3 --> SUPERVISOR
+    AGENT4 --> SUPERVISOR
+    
+    %% Review Process
+    SUPERVISOR --> PARSE
+    PARSE --> ZERO_IMPACT
+    PARSE --> SAFETY
+    PARSE --> CONSISTENCY
+    PARSE --> CONSTRAINTS
+    
+    %% Decision Logic
+    ZERO_IMPACT --> EVALUATE
+    SAFETY --> EVALUATE
+    CONSISTENCY --> EVALUATE
+    CONSTRAINTS --> EVALUATE
+    EVALUATE --> DECIDE
+    
+    %% Decision Outcomes
+    DECIDE --> APPROVED
+    DECIDE --> REJECTED
+    DECIDE --> MODIFY
+    DECIDE --> REVIEW
+    
+    %% Override Mechanisms
+    REJECTED --> BLOCK
+    MODIFY --> MODIFY_DECISION
+    REVIEW --> FLAG
+    
+    %% Workflow Safety
+    WORKFLOW --> ASSESS
+    ASSESS --> SAFE
+    ASSESS --> RISKY
+    ASSESS --> UNSAFE
+    UNSAFE --> BLOCK
+    
+    %% Consistency Checking
+    MULTI_OUTPUTS --> COMPARE
+    COMPARE --> CONFLICTS
+    CONFLICTS --> RESOLVE
+    RESOLVE --> SUPERVISOR
+    
+    %% Feedback Loops
+    MODIFY_DECISION -.->|Resubmit| SUPERVISOR
+    FLAG -.->|Human Decision| SUPERVISOR
+    
+    %% Styling
+    style SUPERVISOR fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px
+    style ZERO_IMPACT fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
+    style SAFETY fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
+    style APPROVED fill:#55efc4,stroke:#00b894,stroke-width:2px
+    style REJECTED fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
+    style MODIFY fill:#ffeaa7,stroke:#fdcb6e,stroke-width:2px
+    style BLOCK fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
+    style UNSAFE fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
+    style SAFE fill:#55efc4,stroke:#00b894,stroke-width:2px
+
+
+

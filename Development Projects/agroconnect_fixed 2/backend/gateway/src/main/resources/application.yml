@@ -1,0 +1,18 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+# Routes are now defined in GatewayConfig.java
+spring:
+  cloud:
+    gateway:
+      discovery:
+        enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+jwt:
+  secret: ${JWT_SECRET:2PSi6ESWyf1OImIRWl4FaQ1QhsTpvmU2yi0CJJGqy6Q=}

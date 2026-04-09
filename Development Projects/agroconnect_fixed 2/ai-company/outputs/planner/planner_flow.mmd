@@ -1,0 +1,90 @@
+graph TB
+    subgraph "Input"
+        REQUEST[High-Level Request]
+    end
+    
+    subgraph "Task Planning"
+        PLANNER[TaskPlanner]
+        LLM[LLM Task Decomposition]
+        PARSE[JSON Parsing]
+        VALIDATE[Validation]
+    end
+    
+    subgraph "Task Assignment"
+        ASSIGNMENT[TaskAssignmentEngine]
+        CAPABILITIES[Agent Capabilities]
+        WORKLOAD[Workload Balancing]
+    end
+    
+    subgraph "Graph Construction"
+        GRAPH[TaskGraph]
+        NODES[Task Nodes]
+        DEPS[Dependencies]
+        CYCLE_CHECK[Cycle Detection]
+    end
+    
+    subgraph "Execution Planning"
+        TOPO_SORT[Topological Sort]
+        EXEC_ORDER[Execution Order]
+        TIMELINE[Timeline Estimation]
+    end
+    
+    subgraph "Output"
+        OUTPUT[PlanningOutput]
+        JSON[JSON Plan]
+        TASKS[Task List]
+        ASSIGNMENTS[Agent Assignments]
+    end
+    
+    subgraph "Agent Execution"
+        AGENTS[AI Agents]
+        TASK_EXEC[Task Execution]
+        STATUS[Status Updates]
+    end
+    
+    %% Planning Flow
+    REQUEST --> PLANNER
+    PLANNER --> LLM
+    LLM --> PARSE
+    PARSE --> VALIDATE
+    
+    %% Assignment Flow
+    VALIDATE --> ASSIGNMENT
+    ASSIGNMENT --> CAPABILITIES
+    ASSIGNMENT --> WORKLOAD
+    
+    %% Graph Construction
+    ASSIGNMENT --> GRAPH
+    GRAPH --> NODES
+    NODES --> DEPS
+    DEPS --> CYCLE_CHECK
+    
+    %% Execution Planning
+    CYCLE_CHECK --> TOPO_SORT
+    TOPO_SORT --> EXEC_ORDER
+    EXEC_ORDER --> TIMELINE
+    
+    %% Output Generation
+    TIMELINE --> OUTPUT
+    OUTPUT --> JSON
+    OUTPUT --> TASKS
+    OUTPUT --> ASSIGNMENTS
+    
+    %% Agent Execution
+    ASSIGNMENTS --> AGENTS
+    AGENTS --> TASK_EXEC
+    TASK_EXEC --> STATUS
+    
+    %% Feedback Loop
+    STATUS -.->|Task Updates| GRAPH
+    
+    %% Styling
+    style PLANNER fill:#4ecdc4,stroke:#2d9cdb,stroke-width:2px
+    style LLM fill:#45b7d1,stroke:#2d9cdb,stroke-width:2px
+    style ASSIGNMENT fill:#96ceb4,stroke:#2d9cdb,stroke-width:2px
+    style GRAPH fill:#ffeaa7,stroke:#fdcb6e,stroke-width:2px
+    style OUTPUT fill:#fd79a8,stroke:#e84393,stroke-width:2px
+    style AGENTS fill:#a29bfe,stroke:#6c5ce7,stroke-width:2px
+
+
+

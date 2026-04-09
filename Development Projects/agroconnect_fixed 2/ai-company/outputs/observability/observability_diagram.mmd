@@ -1,0 +1,116 @@
+graph TB
+    subgraph "Agent Execution"
+        AGENT[Agent Executes]
+        CREATE_LOG[Create AgentExecutionLog]
+        UPDATE_LOG[Update Log with Results]
+        ADD_ISSUES[Add Warnings/Errors]
+    end
+    
+    subgraph "Workflow Execution"
+        WORKFLOW[Workflow Starts]
+        CREATE_WF_LOG[Create WorkflowExecutionLog]
+        ADD_AGENT_LOGS[Add Agent Execution Logs]
+        UPDATE_WF_LOG[Update Workflow Log]
+        COMPLETE_WF[Complete Workflow]
+    end
+    
+    subgraph "Audit Trail Service"
+        STORE_AGENT[Store Agent Log]
+        STORE_WORKFLOW[Store Workflow Log]
+        INDEX[Update Indexes]
+        QUERY[Query Logs]
+    end
+    
+    subgraph "Storage"
+        AGENT_LOGS[(Agent Logs<br/>Map<UUID, Log>)]
+        WORKFLOW_LOGS[(Workflow Logs<br/>Map<UUID, Log>)]
+        AGENT_INDEX[(Agent Index<br/>Map<Name, List<UUID>>)]
+        SESSION_INDEX[(Session Index<br/>Map<Session, List<UUID>>)]
+        WORKFLOW_INDEX[(Workflow Index<br/>Map<Name, List<UUID>>)]
+    end
+    
+    subgraph "Query Operations"
+        BY_AGENT[Query by Agent]
+        BY_SESSION[Query by Session]
+        BY_WORKFLOW[Query by Workflow]
+        BY_TIME[Query by Time Range]
+        WITH_ERRORS[Query with Errors]
+        STATISTICS[Get Statistics]
+    end
+    
+    subgraph "Formatting"
+        FORMATTER[LogFormatter]
+        JSON_FORMAT[JSON Format]
+        TEXT_FORMAT[Text Format]
+        SUMMARY_FORMAT[Summary Format]
+    end
+    
+    subgraph "Output"
+        JSON_OUTPUT[JSON Output]
+        TEXT_OUTPUT[Text Output]
+        SUMMARY_OUTPUT[Summary Output]
+    end
+    
+    %% Agent Execution Flow
+    AGENT --> CREATE_LOG
+    CREATE_LOG --> UPDATE_LOG
+    UPDATE_LOG --> ADD_ISSUES
+    ADD_ISSUES --> STORE_AGENT
+    
+    %% Workflow Execution Flow
+    WORKFLOW --> CREATE_WF_LOG
+    CREATE_WF_LOG --> ADD_AGENT_LOGS
+    ADD_AGENT_LOGS --> UPDATE_WF_LOG
+    UPDATE_WF_LOG --> COMPLETE_WF
+    COMPLETE_WF --> STORE_WORKFLOW
+    
+    %% Storage Flow
+    STORE_AGENT --> AGENT_LOGS
+    STORE_WORKFLOW --> WORKFLOW_LOGS
+    STORE_AGENT --> INDEX
+    STORE_WORKFLOW --> INDEX
+    INDEX --> AGENT_INDEX
+    INDEX --> SESSION_INDEX
+    INDEX --> WORKFLOW_INDEX
+    
+    %% Query Flow
+    QUERY --> BY_AGENT
+    QUERY --> BY_SESSION
+    QUERY --> BY_WORKFLOW
+    QUERY --> BY_TIME
+    QUERY --> WITH_ERRORS
+    QUERY --> STATISTICS
+    
+    BY_AGENT --> AGENT_INDEX
+    BY_SESSION --> SESSION_INDEX
+    BY_WORKFLOW --> WORKFLOW_INDEX
+    BY_TIME --> AGENT_LOGS
+    BY_TIME --> WORKFLOW_LOGS
+    WITH_ERRORS --> AGENT_LOGS
+    WITH_ERRORS --> WORKFLOW_LOGS
+    STATISTICS --> AGENT_LOGS
+    STATISTICS --> WORKFLOW_LOGS
+    
+    %% Formatting Flow
+    AGENT_LOGS --> FORMATTER
+    WORKFLOW_LOGS --> FORMATTER
+    FORMATTER --> JSON_FORMAT
+    FORMATTER --> TEXT_FORMAT
+    FORMATTER --> SUMMARY_FORMAT
+    
+    JSON_FORMAT --> JSON_OUTPUT
+    TEXT_FORMAT --> TEXT_OUTPUT
+    SUMMARY_FORMAT --> SUMMARY_OUTPUT
+    
+    %% Styling
+    style AGENT fill:#4ecdc4,stroke:#2d9cdb,stroke-width:2px
+    style WORKFLOW fill:#45b7d1,stroke:#2d9cdb,stroke-width:2px
+    style STORE_AGENT fill:#96ceb4,stroke:#2d9cdb,stroke-width:2px
+    style STORE_WORKFLOW fill:#96ceb4,stroke:#2d9cdb,stroke-width:2px
+    style QUERY fill:#ffeaa7,stroke:#fdcb6e,stroke-width:2px
+    style FORMATTER fill:#fd79a8,stroke:#e84393,stroke-width:2px
+    style AGENT_LOGS fill:#a29bfe,stroke:#6c5ce7,stroke-width:2px
+    style WORKFLOW_LOGS fill:#a29bfe,stroke:#6c5ce7,stroke-width:2px
+
+
+

@@ -1,0 +1,121 @@
+{
+  "sprintId": "sprint-1-3weeks",
+  "sprintName": "Production-Ready Platform Sprint",
+  "startDate": "2025-11-28",
+  "endDate": "2025-12-19",
+  "sprintGoal": "Transform AgroConnectWorld to production-ready with full integration",
+  "totalStoryPoints": 121,
+  "epics": [
+    {
+      "epicId": "epic-1",
+      "name": "Frontend-Backend Integration",
+      "priority": "P0",
+      "storyPoints": 21,
+      "status": "TODO",
+      "userStories": [
+        {
+          "id": "us-1-1",
+          "title": "Create API Service Layer",
+          "description": "Refactor API service to handle all backend communication with proper error handling and token management",
+          "storyPoints": 3,
+          "priority": "P0",
+          "status": "TODO",
+          "acceptanceCriteria": [
+            "API service handles all HTTP methods",
+            "Request interceptors add auth tokens",
+            "Response interceptors handle errors",
+            "Base URL configurable via environment",
+            "Error handling utilities available"
+          ],
+          "tasks": [
+            "Refactor api.js with base configuration",
+            "Add request interceptors",
+            "Add response interceptors",
+            "Create error handling utilities",
+            "Add environment variable support"
+          ],
+          "assignedAgent": "FullStackAgent"
+        },
+        {
+          "id": "us-1-2",
+          "title": "Product API Integration",
+          "description": "Replace mock data in Products page with real API calls to product-service",
+          "storyPoints": 5,
+          "priority": "P0",
+          "status": "TODO",
+          "acceptanceCriteria": [
+            "Products page fetches from /api/products",
+            "Loading states displayed during fetch",
+            "Error states handled gracefully",
+            "Category filtering works",
+            "Pagination implemented"
+          ],
+          "tasks": [
+            "Update Products.jsx to use API",
+            "Add loading spinner",
+            "Add error handling",
+            "Implement category filtering",
+            "Add pagination component"
+          ],
+          "assignedAgent": "FullStackAgent"
+        }
+      ]
+    },
+    {
+      "epicId": "epic-2",
+      "name": "Authentication Flow",
+      "priority": "P0",
+      "storyPoints": 13,
+      "status": "TODO",
+      "userStories": [
+        {
+          "id": "us-2-1",
+          "title": "Auth Context & State Management",
+          "description": "Create authentication context to manage user state and tokens across the application",
+          "storyPoints": 3,
+          "priority": "P0",
+          "status": "TODO",
+          "acceptanceCriteria": [
+            "AuthContext provides user state",
+            "Token stored securely",
+            "Token refresh logic implemented",
+            "Login state persists across reloads"
+          ],
+          "tasks": [
+            "Create AuthContext.jsx",
+            "Implement token storage",
+            "Add token refresh logic",
+            "Add login state management"
+          ],
+          "assignedAgent": "FullStackAgent"
+        },
+        {
+          "id": "us-2-2",
+          "title": "Login/Register UI",
+          "description": "Create login and registration pages with form validation and API integration",
+          "storyPoints": 5,
+          "priority": "P0",
+          "status": "TODO",
+          "acceptanceCriteria": [
+            "Login page functional",
+            "Register page functional",
+            "Form validation working",
+            "API integration complete",
+            "Error messages displayed"
+          ],
+          "tasks": [
+            "Create Login.jsx page",
+            "Create Register.jsx page",
+            "Add form validation",
+            "Integrate with auth API",
+            "Add error message display"
+          ],
+          "assignedAgent": "FullStackAgent"
+        }
+      ]
+    }
+  ]
+}
+
+
+

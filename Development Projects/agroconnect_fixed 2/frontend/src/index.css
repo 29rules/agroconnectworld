@@ -1,0 +1,543 @@
+:root {
+    /* Logo Color Theme */
+    --agro-green: #1a5f2e; /* Dark green from cube face and "AgroConnect" text */
+    --agro-green-light: #2F9E44; /* Lighter green for buttons and accents */
+    --charcoal-grey: #2B2B2B; /* Dark charcoal grey from cube faces and "World" text */
+    --charcoal-grey-light: #3d3d3d; /* Lighter grey for hover states */
+    --gold-accent: #D4A017; /* Golden yellow from the leaf */
+    --gold-accent-light: #E8B82E; /* Lighter gold for hover */
+    --cream-bg: #F5F5F0; /* Light beige/cream background */
+    --text-light: #FFFFFF;
+    --text-dark: #2B2B2B;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.navbar-custom .navbar-logo {
+    display: flex;
+}
+
+/* Navbar Background - Elegant & Professional */
+.navbar-custom {
+    background: linear-gradient(135deg, var(--charcoal-grey) 0%, #1a1a1a 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 0.5rem 0;
+    backdrop-filter: blur(10px);
+}
+
+/* Navbar Brand */
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.navbar-brand:hover {
+    transform: translateY(-1px);
+}
+
+.nav-brand-text {
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.brand-primary {
+    color: var(--agro-green-light);
+}
+
+.brand-secondary {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.navbar-logo {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+/* Navbar Links - Clean & Minimal */
+.navbar-custom .nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border-radius: 6px;
+    margin: 0 0.25rem;
+}
+
+.navbar-custom .nav-link:hover {
+    color: var(--agro-green-light) !important;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.navbar-custom .nav-link.active {
+    color: var(--agro-green-light) !important;
+    background-color: rgba(47, 158, 68, 0.1);
+    font-weight: 600;
+}
+
+/* Dropdown Toggle */
+.navbar-custom .dropdown-toggle {
+    position: relative;
+}
+
+.navbar-custom .dropdown-toggle::after {
+    margin-left: 0.5em;
+    vertical-align: 0.15em;
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+}
+
+/* Dropdown Menu - Elegant Design */
+.navbar-custom .dropdown-menu {
+    background-color: white;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    margin-top: 0.75rem;
+    padding: 0.5rem 0;
+    min-width: 220px;
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    animation: fadeInDown 0.2s ease-out;
+}
+
+@media (max-width: 991px) {
+    .navbar-custom .dropdown-menu {
+        position: static;
+        box-shadow: none;
+        margin-top: 0;
+        padding-left: 1.5rem;
+    }
+}
+
+.navbar-custom .dropdown-menu.show {
+    display: block;
+    animation: fadeInDown 0.3s ease-out;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.navbar-custom .dropdown-item {
+    color: var(--text-dark) !important;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    border: none;
+    background: none;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-custom .dropdown-item:hover,
+.navbar-custom .dropdown-item:focus {
+    background-color: rgba(47, 158, 68, 0.08);
+    color: var(--agro-green-light) !important;
+    padding-left: 1.5rem;
+}
+
+.navbar-custom .dropdown-item:active {
+    background-color: #e9ecef;
+    color: var(--agro-green-light) !important;
+}
+
+.navbar-custom .nav-link:hover {
+    color: var(--agro-green-light) !important;
+}
+
+/* Active Link (current page) */
+.navbar-custom .nav-link.active {
+    color: var(--agro-green-light) !important;
+    font-weight: 600;
+    border-bottom: 2px solid var(--agro-green-light);
+}
+
+/* Navbar Actions - Right Side */
+.navbar-actions {
+    margin-left: auto;
+}
+
+.nav-action-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.85);
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-action-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--agro-green-light);
+}
+
+.cart-btn {
+    position: relative;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: var(--agro-green-light);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+/* User Menu */
+.nav-user-menu {
+    position: relative;
+}
+
+.nav-user-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 0.4rem 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.nav-user-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: white;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--agro-green-light);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.user-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    min-width: 240px;
+    padding: 0.5rem 0;
+    display: none;
+    z-index: 1000;
+    list-style: none;
+    margin: 0;
+}
+
+.user-dropdown.show {
+    display: block;
+    animation: fadeInDown 0.2s ease-out;
+}
+
+.user-info {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.user-name-full {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+
+.user-email {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+/* Auth Buttons */
+.auth-buttons {
+    align-items: center;
+}
+
+.nav-link-btn {
+    color: rgba(255, 255, 255, 0.85) !important;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.nav-link-btn:hover {
+    color: var(--agro-green-light) !important;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Mobile Responsive */
+@media (max-width: 991px) {
+    .navbar-custom .dropdown-menu {
+        position: static;
+        box-shadow: none;
+        margin-top: 0;
+        padding-left: 1rem;
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .navbar-custom .dropdown-item {
+        color: rgba(255, 255, 255, 0.85) !important;
+        padding-left: 2rem;
+    }
+    
+    .navbar-custom .dropdown-item:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--agro-green-light) !important;
+    }
+    
+    .user-dropdown {
+        position: static;
+        margin-top: 0.5rem;
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .user-info {
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .user-name-full,
+    .user-email {
+        color: rgba(255, 255, 255, 0.9);
+    }
+}
+
+/* Toggler for mobile */
+.navbar-toggler {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.5rem;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Card Styles */
+.card {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1) !important;
+}
+
+.category-card {
+    cursor: pointer;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15) !important;
+}
+
+.product-card {
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15) !important;
+}
+
+/* Button Styles */
+.btn-success {
+    background-color: var(--agro-green-light);
+    border-color: var(--agro-green-light);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    background-color: var(--agro-green);
+    border-color: var(--agro-green);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(26, 95, 46, 0.3);
+}
+
+.btn-outline-success {
+    color: var(--agro-green-light);
+    border-color: var(--agro-green-light);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-success:hover {
+    background-color: var(--agro-green-light);
+    border-color: var(--agro-green-light);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Hero Section */
+.hero-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    opacity: 0.3;
+}
+
+/* Footer Styles */
+footer {
+    background-color: var(--charcoal-grey) !important;
+}
+
+footer a:hover {
+    color: var(--agro-green-light) !important;
+    transition: color 0.3s ease;
+}
+
+footer .text-white-50 {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+footer .text-white-50:hover {
+    color: var(--agro-green-light) !important;
+}
+
+/* Body background to match cream theme */
+body {
+    background-color: var(--cream-bg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navHeaderTitle {
+        font-size: 1.2rem;
+    }
+    
+    .hero-section h1 {
+        font-size: 2rem !important;
+    }
+    
+    .display-3 {
+        font-size: 2.5rem !important;
+    }
+    
+    .display-4 {
+        font-size: 2rem !important;
+    }
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Cart Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.cart-overlay {
+    animation: fadeIn 0.3s ease;
+}
+
+.cart-sidebar {
+    transition: right 0.3s ease;
+}
+
+/* Cart Badge Animation */
+@keyframes bounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+.badge {
+    animation: bounce 0.5s ease;
+}
+
+/* Loading and animation utilities */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}

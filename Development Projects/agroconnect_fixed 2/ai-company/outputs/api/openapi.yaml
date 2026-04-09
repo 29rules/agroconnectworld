@@ -1,0 +1,415 @@
+openapi: 3.0.3
+info:
+  title: AgroConnectWorld AI Company API
+  description: |
+    REST API for executing AI agents, running workflows, and obtaining CTO approvals.
+    This is a pure meta-layer API that does not modify any AgroConnectWorld backend code.
+    
+    **ZERO-IMPACT MODE**: All operations produce specifications only. No code modifications.
+  version: 1.0.0
+  contact:
+    name: AgroConnectWorld AI Company
+    email: ai-company@agroconnectworld.com
+
+servers:
+  - url: http://localhost:8080/api
+    description: Development server
+
+tags:
+  - name: Agents
+    description: AI agent execution endpoints
+  - name: Workflows
+    description: Multi-agent workflow execution endpoints
+  - name: CTO
+    description: CTO approval and review endpoints
+
+paths:
+  /agents:
+    get:
+      tags:
+        - Agents
+      summary: List available agents
+      description: Returns list of all registered AI agents
+      operationId: listAgents
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentListResponse'
+
+  /agents/{agentName}/run:
+    post:
+      tags:
+        - Agents
+      summary: Execute an agent
+      description: Executes a specific AI agent with the provided input
+      operationId: runAgent
+      parameters:
+        - name: agentName
+          in: path
+          required: true
+          description: Name of the agent to execute
+          schema:
+            type: string
+            enum:
+              - cto_agent
+              - supervisor_agent
+              - architect_agent
+              - engineer_agent
+              - devops_agent
+              - fullstack_agent
+              - product_manager_agent
+              - qa_agent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentRequest'
+      responses:
+        '200':
+          description: Successful execution
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentResponse'
+        '400':
+          description: Invalid agent name or request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /workflows:
+    get:
+      tags:
+        - Workflows
+      summary: List available workflows
+      description: Returns list of all available workflows
+      operationId: listWorkflows
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowListResponse'
+
+  /workflows/{workflowName}/run:
+    post:
+      tags:
+        - Workflows
+      summary: Execute a workflow
+      description: Executes a multi-agent workflow
+      operationId: runWorkflow
+      parameters:
+        - name: workflowName
+          in: path
+          required: true
+          description: Name of the workflow to execute
+          schema:
+            type: string
+            enum:
+              - planning
+              - architecture
+              - development
+              - review
+              - testing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowRequest'
+      responses:
+        '200':
+          description: Successful execution
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowResponse'
+        '400':
+          description: Invalid workflow name or request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /cto/approve:
+    post:
+      tags:
+        - CTO
+      summary: CTO approval
+      description: Get CTO approval for a decision
+      operationId: ctoApprove
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovalRequest'
+      responses:
+        '200':
+          description: Approval response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /cto/review:
+    post:
+      tags:
+        - CTO
+      summary: CTO review
+      description: Get CTO review of architecture or decision
+      operationId: ctoReview
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovalRequest'
+      responses:
+        '200':
+          description: Review response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /cto/assess-risk:
+    post:
+      tags:
+        - CTO
+      summary: CTO risk assessment
+      description: Get CTO risk assessment for a proposal
+      operationId: ctoAssessRisk
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovalRequest'
+      responses:
+        '200':
+          description: Risk assessment response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    AgentRequest:
+      type: object
+      required:
+        - input
+      properties:
+        input:
+          type: string
+          description: Input text for the agent
+        session_id:
+          type: string
+          description: Session ID for context
+          default: default-session
+        parameters:
+          type: object
+          additionalProperties: true
+          description: Additional parameters
+
+    AgentResponse:
+      type: object
+      properties:
+        agent_name:
+          type: string
+        response:
+          type: string
+        session_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [success, error]
+        metadata:
+          type: object
+          additionalProperties: true
+
+    AgentListResponse:
+      type: object
+      properties:
+        agents:
+          type: array
+          items:
+            type: string
+        total:
+          type: integer
+
+    WorkflowRequest:
+      type: object
+      required:
+        - input
+      properties:
+        input:
+          type: string
+          description: Input for the workflow
+        session_id:
+          type: string
+          description: Session ID for context
+          default: default-session
+        workflow_parameters:
+          type: object
+          additionalProperties: true
+          description: Workflow-specific parameters
+
+    WorkflowResponse:
+      type: object
+      properties:
+        workflow_name:
+          type: string
+        status:
+          type: string
+          enum: [completed, error]
+        session_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        results:
+          type: object
+          additionalProperties: true
+        execution_steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExecutionStep'
+        metadata:
+          type: object
+          additionalProperties: true
+
+    ExecutionStep:
+      type: object
+      properties:
+        step_name:
+          type: string
+        agent:
+          type: string
+        status:
+          type: string
+        output:
+          type: string
+
+    WorkflowListResponse:
+      type: object
+      properties:
+        workflows:
+          type: array
+          items:
+            type: string
+        total:
+          type: integer
+
+    ApprovalRequest:
+      type: object
+      required:
+        - decision
+      properties:
+        decision:
+          type: string
+          description: Decision or proposal to review
+        context:
+          type: string
+          description: Additional context
+        session_id:
+          type: string
+          description: Session ID for context
+        request_type:
+          type: string
+          enum: [approval, review, risk_assessment]
+          default: approval
+          description: Type of request
+
+    ApprovalResponse:
+      type: object
+      properties:
+        decision_type:
+          type: string
+          enum: [approval, rejection, modification_request, error]
+        approved:
+          type: boolean
+        review_summary:
+          type: string
+        risk_level:
+          type: string
+          enum: [low, medium, high, critical]
+        recommendations:
+          type: array
+          items:
+            type: string
+        session_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        technical_assessment:
+          $ref: '#/components/schemas/TechnicalAssessment'
+        metadata:
+          type: object
+          additionalProperties: true
+
+    TechnicalAssessment:
+      type: object
+      properties:
+        impact_analysis:
+          type: string
+        compliance_check:
+          type: string
+        breaking_changes:
+          type: boolean
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        error:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+
+

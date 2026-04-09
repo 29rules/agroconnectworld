@@ -1,0 +1,167 @@
+{
+  "tools": [
+    {
+      "name": "GitHub Reader",
+      "type": "read-only",
+      "description": "Read-only access to GitHub repository for codebase analysis",
+      "capabilities": [
+        "Read repository structure",
+        "Read file contents",
+        "Read commit history",
+        "Read branch information",
+        "Read pull request information"
+      ],
+      "limitations": [
+        "Cannot create commits",
+        "Cannot push changes",
+        "Cannot create branches",
+        "Cannot modify repository"
+      ],
+      "used_by": [
+        "ai_architect_agent",
+        "ai_engineer_agent",
+        "fullstack_dev_agent",
+        "devops_agent"
+      ],
+      "access_level": "read-only"
+    },
+    {
+      "name": "Repo File Reader",
+      "type": "read-only",
+      "description": "Read-only access to local repository files for code analysis",
+      "capabilities": [
+        "Read file contents",
+        "Read directory structure",
+        "Read configuration files",
+        "Read documentation files"
+      ],
+      "limitations": [
+        "Cannot modify files",
+        "Cannot create files",
+        "Cannot delete files"
+      ],
+      "used_by": [
+        "ai_architect_agent",
+        "ai_engineer_agent",
+        "fullstack_dev_agent",
+        "devops_agent",
+        "qa_agent"
+      ],
+      "access_level": "read-only"
+    },
+    {
+      "name": "Docker Monitor",
+      "type": "read-only",
+      "description": "Read-only monitoring of Docker containers and infrastructure",
+      "capabilities": [
+        "Read container status",
+        "Read container stats (CPU, memory, disk)",
+        "Read Docker Compose configuration",
+        "Read network information",
+        "Read volume information"
+      ],
+      "limitations": [
+        "Cannot start/stop containers",
+        "Cannot modify Docker configurations",
+        "Cannot create containers",
+        "Cannot modify networks or volumes"
+      ],
+      "used_by": [
+        "devops_agent"
+      ],
+      "access_level": "read-only"
+    },
+    {
+      "name": "Log Reader",
+      "type": "read-only",
+      "description": "Read-only access to application and system logs",
+      "capabilities": [
+        "Read application logs",
+        "Read system logs",
+        "Read container logs",
+        "Filter logs by level",
+        "Search logs by pattern"
+      ],
+      "limitations": [
+        "Cannot modify logs",
+        "Cannot delete logs",
+        "Cannot create log entries"
+      ],
+      "used_by": [
+        "devops_agent",
+        "qa_agent"
+      ],
+      "access_level": "read-only"
+    }
+  ],
+  "tool_categories": {
+    "code_analysis": [
+      "GitHub Reader",
+      "Repo File Reader"
+    ],
+    "infrastructure_monitoring": [
+      "Docker Monitor",
+      "Log Reader"
+    ]
+  },
+  "access_policies": {
+    "zero_impact_mode": {
+      "description": "All tools operate in read-only mode",
+      "enforcement": "Hard constraint - cannot be overridden",
+      "exceptions": "None"
+    },
+    "agent_permissions": {
+      "cto_agent": [
+        "GitHub Reader",
+        "Repo File Reader",
+        "Docker Monitor",
+        "Log Reader"
+      ],
+      "ai_architect_agent": [
+        "GitHub Reader",
+        "Repo File Reader"
+      ],
+      "ai_engineer_agent": [
+        "GitHub Reader",
+        "Repo File Reader"
+      ],
+      "fullstack_dev_agent": [
+        "GitHub Reader",
+        "Repo File Reader"
+      ],
+      "devops_agent": [
+        "Docker Monitor",
+        "Log Reader",
+        "Repo File Reader"
+      ],
+      "qa_agent": [
+        "Repo File Reader",
+        "Log Reader"
+      ],
+      "product_manager_agent": []
+    }
+  },
+  "future_tools": [
+    {
+      "name": "Code Generator",
+      "type": "write",
+      "description": "Generate code from specifications (when implementation mode activated)",
+      "status": "planned"
+    },
+    {
+      "name": "Test Runner",
+      "type": "execute",
+      "description": "Execute test suites (when implementation mode activated)",
+      "status": "planned"
+    },
+    {
+      "name": "Deployment Manager",
+      "type": "deploy",
+      "description": "Manage deployments (when implementation mode activated)",
+      "status": "planned"
+    }
+  ]
+}
+
+
+

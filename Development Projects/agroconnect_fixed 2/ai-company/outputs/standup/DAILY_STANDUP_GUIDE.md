@@ -1,0 +1,407 @@
+# Daily Standup Guide
+
+## Overview
+
+The Daily Standup System provides AI-powered daily standup report generation based on backlog state, sprint progress, and blockers.
+
+## Components
+
+### 1. StandupAgent
+**Purpose:** AI agent that generates daily standup reports.
+
+**Inputs:**
+- `backlogState`: Current backlog state summary
+- `yesterdayProgress`: Yesterday's completed work
+- `blockers`: List of blockers from agents
+
+**Outputs (JSON):**
+```json
+{
+  "yesterday_completed": [
+    {
+      "item": "Item title or task",
+      "agent": "Agent name",
+      "status": "completed|in_progress|blocked"
+    }
+  ],
+  "today_plan": [
+    {
+      "item": "Item title or task",
+      "agent": "Agent name",
+      "priority": "high|medium|low",
+      "estimated_hours": 4
+    }
+  ],
+  "blockers": [
+    {
+      "item": "Blocker description",
+      "agent": "Agent name",
+      "severity": "high|medium|low",
+      "help_needed": "What help is needed"
+    }
+  ],
+  "risk_flag": {
+    "level": "none|low|medium|high",
+    "issues": [
+      "Risk description"
+    ]
+  }
+}
+```
+
+**Features:**
+- Uses LangChain4j `@AiService`
+- Structured JSON output
+- Concise and actionable reports
+- Risk identification
+- Zero-impact mode (reporting only)
+
+---
+
+### 2. StandupReportBuilder
+**Purpose:** Converts JSON standup report into formatted summaries.
+
+**Formats:**
+1. **Slack-style:** Markdown with emojis, color-coded sections
+2. **Plain text:** Simple text format for logs/emails
+
+**Slack-style Features:**
+- Emoji indicators for status, priority, severity, risk
+- Clear section headers
+- Formatted lists
+- Color-coded priorities
+
+**Plain Text Features:**
+- Simple text format
+- Clear section separators
+- Easy to read in logs/emails
+
+---
+
+## Usage Examples
+
+### Basic Standup Generation
+
+```java
+// Initialize components
+ChatLanguageModel chatModel = // ... initialize
+StandupAgent standupAgent = StandupAgent.create(chatModel);
+
+// Prepare inputs
+String backlogState = """
+    Backlog Status:
+    - TODO: 15 items
+    - IN_PROGRESS: 5 items
+    - DONE: 10 items
+    Total Story Points: 45
+    """;
+
+String yesterdayProgress = """
+    Completed:
+    - User Registration API (EngineerAgent) - completed
+    - Product List UI (FullStackAgent) - completed
+    In Progress:
+    - Authentication Service (EngineerAgent) - in_progress
+    """;
+
+String blockers = """
+    Blockers:
+    - Database migration issue (EngineerAgent) - high severity
+      Help needed: DevOpsAgent to review migration script
+    """;
+
+// Generate standup report
+String sessionId = "standup-" + System.currentTimeMillis();
+String jsonReport = standupAgent.generateStandupReport(
+    sessionId,
+    backlogState,
+    yesterdayProgress,
+    blockers
+);
+```
+
+### Building Formatted Reports
+
+```java
+// Build Slack-style report
+StandupReportBuilder builder = new StandupReportBuilder();
+String slackReport = builder.buildSlackStyleReport(jsonReport);
+System.out.println(slackReport);
+
+// Build plain text report
+String plainTextReport = builder.buildPlainTextReport(jsonReport);
+System.out.println(plainTextReport);
+```
+
+### Integration with Backlog Manager
+
+```java
+// Get backlog state from BacklogManager
+BacklogManager backlogManager = new BacklogManager();
+BacklogReporter reporter = new BacklogReporter(backlogManager);
+String backlogState = reporter.generateStatusDistribution();
+
+// Get yesterday's progress (from sprint tracking)
+String yesterdayProgress = getYesterdayProgress(); // Your implementation
+
+// Get blockers from agents
+String blockers = collectBlockersFromAgents(); // Your implementation
+
+// Generate standup
+StandupAgent standupAgent = StandupAgent.create(chatModel);
+String jsonReport = standupAgent.generateStandupReport(
+    "session-123",
+    backlogState,
+    yesterdayProgress,
+    blockers
+);
+
+// Format and send
+StandupReportBuilder builder = new StandupReportBuilder();
+String formattedReport = builder.buildSlackStyleReport(jsonReport);
+sendToSlack(formattedReport); // Your implementation
+```
+
+---
+
+## Output Formats
+
+### Slack-Style Report Example
+
+```
+:calendar: *Daily Standup Report*
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+:white_check_mark: *Yesterday Completed*
+:white_check_mark: *User Registration API* (EngineerAgent) - completed
+:white_check_mark: *Product List UI* (FullStackAgent) - completed
+
+:rocket: *Today's Plan*
+:red_circle: *Authentication Service* (EngineerAgent) - Priority: HIGH - Est: 6h
+:yellow_circle: *Product Search* (FullStackAgent) - Priority: MEDIUM - Est: 4h
+
+:warning: *Blockers*
+:rotating_light: *Database migration issue* (EngineerAgent) - Severity: HIGH
+   _Help needed: DevOpsAgent to review migration script_
+
+:chart_with_upwards_trend: *Risk Assessment*
+:yellow_circle: Risk Level: *MEDIUM*
+Issues:
+  • Authentication service delay may impact sprint goal
+  • Database migration blocker needs immediate attention
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+_Generated by StandupAgent_
+```
+
+### Plain Text Report Example
+
+```
+================================================================================
+DAILY STANDUP REPORT
+================================================================================
+
+YESTERDAY COMPLETED:
+--------------------------------------------------------------------------------
+  • User Registration API (EngineerAgent) - completed
+  • Product List UI (FullStackAgent) - completed
+
+TODAY'S PLAN:
+--------------------------------------------------------------------------------
+  • Authentication Service (EngineerAgent) - Priority: HIGH - Est: 6h
+  • Product Search (FullStackAgent) - Priority: MEDIUM - Est: 4h
+
+BLOCKERS:
+--------------------------------------------------------------------------------
+  • Database migration issue (EngineerAgent) - Severity: HIGH
+    Help needed: DevOpsAgent to review migration script
+
+RISK ASSESSMENT:
+--------------------------------------------------------------------------------
+Risk Level: MEDIUM
+Issues:
+  • Authentication service delay may impact sprint goal
+  • Database migration blocker needs immediate attention
+
+================================================================================
+```
+
+---
+
+## JSON Schema
+
+### yesterday_completed
+```json
+{
+  "item": "string - Item title or task description",
+  "agent": "string - Agent name who worked on it",
+  "status": "string - completed|in_progress|blocked"
+}
+```
+
+### today_plan
+```json
+{
+  "item": "string - Item title or task description",
+  "agent": "string - Agent name assigned",
+  "priority": "string - high|medium|low",
+  "estimated_hours": "number - Estimated hours to complete"
+}
+```
+
+### blockers
+```json
+{
+  "item": "string - Blocker description",
+  "agent": "string - Agent name reporting blocker",
+  "severity": "string - high|medium|low",
+  "help_needed": "string - What help is needed"
+}
+```
+
+### risk_flag
+```json
+{
+  "level": "string - none|low|medium|high",
+  "issues": [
+    "string - Risk description"
+  ]
+}
+```
+
+---
+
+## Emoji Reference
+
+### Status Emojis
+- `:white_check_mark:` - Completed
+- `:hourglass_flowing_sand:` - In Progress
+- `:no_entry:` - Blocked
+- `:question:` - Unknown
+
+### Priority Emojis
+- `:red_circle:` - High priority
+- `:yellow_circle:` - Medium priority
+- `:green_circle:` - Low priority
+- `:white_circle:` - Unknown
+
+### Severity Emojis
+- `:rotating_light:` - High severity
+- `:warning:` - Medium severity
+- `:information_source:` - Low severity
+- `:question:` - Unknown
+
+### Risk Level Emojis
+- `:red_circle:` - High risk
+- `:yellow_circle:` - Medium risk
+- `:green_circle:` - Low risk
+- `:white_check_mark:` - No risk
+
+---
+
+## Best Practices
+
+### Input Preparation
+1. **Backlog State:** Provide concise summary of backlog status
+2. **Yesterday's Progress:** List completed and in-progress items
+3. **Blockers:** Include all blockers with severity and help needed
+
+### Report Generation
+1. **Use Session IDs:** Use unique session IDs for memory continuity
+2. **Regular Updates:** Generate reports daily at the same time
+3. **Consistent Format:** Use same input format for consistency
+
+### Report Distribution
+1. **Slack Integration:** Send Slack-style reports to Slack channels
+2. **Email:** Send plain text reports via email
+3. **Logging:** Log reports for audit trail
+
+---
+
+## Integration Points
+
+The Daily Standup System integrates with:
+
+1. **BacklogManager** - For backlog state
+2. **BacklogReporter** - For backlog summaries
+3. **SprintPlanner** - For sprint progress
+4. **SprintVelocityTracker** - For velocity data
+5. **Agent Registry** - For agent information
+
+---
+
+## Zero-Impact Compliance
+
+All standup operations:
+- ✅ Generate reports only
+- ✅ Read backlog state
+- ✅ Aggregate progress data
+- ✅ Never modify code or systems
+- ✅ Provide visibility into team status
+- ✅ Support decision-making
+- ✅ Full audit trail with timestamps
+
+The Daily Standup System is a reporting and visibility tool that supports Agile development without making actual changes to code or systems.
+
+---
+
+## Automation
+
+### Daily Standup Automation
+
+```java
+// Schedule daily standup at 9 AM
+@Scheduled(cron = "0 0 9 * * MON-FRI")
+public void generateDailyStandup() {
+    // Collect data
+    String backlogState = getBacklogState();
+    String yesterdayProgress = getYesterdayProgress();
+    String blockers = collectBlockers();
+    
+    // Generate report
+    StandupAgent agent = StandupAgent.create(chatModel);
+    String jsonReport = agent.generateStandupReport(
+        "daily-standup-" + LocalDate.now(),
+        backlogState,
+        yesterdayProgress,
+        blockers
+    );
+    
+    // Format and send
+    StandupReportBuilder builder = new StandupReportBuilder();
+    String formattedReport = builder.buildSlackStyleReport(jsonReport);
+    
+    // Send to Slack
+    sendToSlack("#standup", formattedReport);
+    
+    // Log
+    log.info("Daily standup generated and sent");
+}
+```
+
+---
+
+## Error Handling
+
+The StandupReportBuilder includes error handling:
+
+- **JSON Parsing Errors:** Returns error message in formatted report
+- **Missing Fields:** Uses defaults (e.g., "Unknown" for missing agent)
+- **Empty Data:** Shows appropriate "No data" messages
+- **Invalid Format:** Returns error report with details
+
+---
+
+## Future Enhancements
+
+Potential future enhancements:
+
+1. **Historical Trends:** Track standup trends over time
+2. **Predictive Analytics:** Predict blockers before they occur
+3. **Agent Recommendations:** Suggest agent assignments
+4. **Integration with Jira/GitHub:** Pull data from issue trackers
+5. **Voice Standup:** Generate voice summaries
+6. **Multi-language Support:** Generate reports in multiple languages
+
+
+

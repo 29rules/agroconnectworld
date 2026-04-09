@@ -1,0 +1,33 @@
+graph TD
+    subgraph "Task DAG Example"
+        T1[task-1: Create Epic<br/>product_manager_agent<br/>Priority: HIGH]
+        T2[task-2: Design Architecture<br/>architect_agent<br/>Priority: CRITICAL]
+        T3[task-3: Design API Contracts<br/>architect_agent<br/>Priority: CRITICAL]
+        T4[task-4: Backend Implementation<br/>engineer_agent<br/>Priority: HIGH]
+        T5[task-5: Frontend Implementation<br/>fullstack_agent<br/>Priority: HIGH]
+        T6[task-6: Create Test Plan<br/>qa_agent<br/>Priority: MEDIUM]
+        T7[task-7: CTO Review<br/>cto_agent<br/>Priority: CRITICAL]
+    end
+    
+    %% Dependencies
+    T1 --> T2
+    T1 --> T3
+    T2 --> T4
+    T3 --> T4
+    T2 --> T5
+    T3 --> T5
+    T4 --> T6
+    T5 --> T6
+    T6 --> T7
+    
+    %% Styling by Agent
+    style T1 fill:#ffeaa7,stroke:#fdcb6e,stroke-width:2px
+    style T2 fill:#4ecdc4,stroke:#2d9cdb,stroke-width:2px
+    style T3 fill:#4ecdc4,stroke:#2d9cdb,stroke-width:2px
+    style T4 fill:#45b7d1,stroke:#2d9cdb,stroke-width:2px
+    style T5 fill:#96ceb4,stroke:#2d9cdb,stroke-width:2px
+    style T6 fill:#fd79a8,stroke:#e84393,stroke-width:2px
+    style T7 fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px
+
+
+

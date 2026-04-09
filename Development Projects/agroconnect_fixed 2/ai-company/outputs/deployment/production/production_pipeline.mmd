@@ -1,0 +1,86 @@
+graph TD
+    Start([Production Deployment Request]) --> Plan[DeploymentPlanAgent<br/>Generate Plan]
+    
+    Plan --> Validate[Validate Plan<br/>Check Risk Level]
+    
+    Validate -->|Risk > Threshold| Reject1([REJECTED<br/>Risk Too High])
+    Validate -->|Risk OK| Stage[Staging Simulation<br/>StagingSimulator]
+    
+    Stage --> StageValidate[StagingValidationAgent<br/>Validate Results]
+    
+    StageValidate -->|Failures| Fix[Fix Issues]
+    Fix --> Stage
+    StageValidate -->|Pass| Supervisor[SupervisorAgent<br/>Review & Approve]
+    
+    Supervisor -->|Rejected| Reject2([REJECTED<br/>Supervisor Denied])
+    Supervisor -->|Approved| CTO[CTOAgent<br/>Review & Approve]
+    
+    CTO -->|Rejected| Reject3([REJECTED<br/>CTO Denied])
+    CTO -->|Approved| ProdAgent[ProductionDeploymentAgent<br/>Final Evaluation]
+    
+    ProdAgent -->|Rejected| Reject4([REJECTED<br/>Production Agent Denied])
+    ProdAgent -->|Approved| CheckMode{Impact Mode?}
+    
+    CheckMode -->|Not FULL_IMPACT| Reject5([REJECTED<br/>Requires FULL_IMPACT])
+    CheckMode -->|FULL_IMPACT| Snapshot[RollbackManager<br/>Create Snapshot]
+    
+    Snapshot --> SSH[SSH to VPS<br/>Validate Connection]
+    
+    SSH -->|Failed| Reject6([REJECTED<br/>Connection Failed])
+    SSH -->|Success| Upload[Upload Artifacts<br/>Images & Config]
+    
+    Upload -->|Failed| Rollback1[RollbackManager<br/>Rollback]
+    Upload -->|Success| Rebuild[Rebuild Containers<br/>docker-compose pull & build]
+    
+    Rebuild -->|Failed| Rollback2[RollbackManager<br/>Rollback]
+    Rebuild -->|Success| Migrate[Apply Migrations<br/>Safely]
+    
+    Migrate -->|Failed| Warn1[Warning: Migration Issues<br/>Continue with Caution]
+    Warn1 --> Restart
+    Migrate -->|Success| Restart[Restart Services<br/>docker-compose restart]
+    
+    Restart -->|Failed| Rollback3[RollbackManager<br/>Rollback]
+    Restart -->|Success| Health[Validate Health<br/>Check Endpoints]
+    
+    Health -->|Unhealthy| Monitor[RollbackManager<br/>Monitor Metrics]
+    Health -->|Healthy| Monitor
+    
+    Monitor --> CheckMetrics{Check Metrics}
+    
+    CheckMetrics -->|Health < 70%| AutoRollback1[Auto Rollback<br/>Health Below Threshold]
+    CheckMetrics -->|Error Rate > 10%| AutoRollback2[Auto Rollback<br/>Error Rate High]
+    CheckMetrics -->|CPU > 90%| AutoRollback3[Auto Rollback<br/>CPU Spike]
+    CheckMetrics -->|Memory > 90%| AutoRollback4[Auto Rollback<br/>Memory Spike]
+    CheckMetrics -->|Supervisor Flag| AutoRollback5[Auto Rollback<br/>Supervisor Anomaly]
+    CheckMetrics -->|All OK| Success([DEPLOYMENT SUCCESS<br/>Production Live])
+    
+    AutoRollback1 --> RollbackComplete[Rollback Complete<br/>Restored to Snapshot]
+    AutoRollback2 --> RollbackComplete
+    AutoRollback3 --> RollbackComplete
+    AutoRollback4 --> RollbackComplete
+    AutoRollback5 --> RollbackComplete
+    
+    Rollback1 --> RollbackComplete
+    Rollback2 --> RollbackComplete
+    Rollback3 --> RollbackComplete
+    
+    RollbackComplete --> Failed([DEPLOYMENT FAILED<br/>Rolled Back])
+    
+    style Start fill:#e1f5ff
+    style Success fill:#d4edda
+    style Failed fill:#f8d7da
+    style Reject1 fill:#f8d7da
+    style Reject2 fill:#f8d7da
+    style Reject3 fill:#f8d7da
+    style Reject4 fill:#f8d7da
+    style Reject5 fill:#f8d7da
+    style Reject6 fill:#f8d7da
+    style Warn1 fill:#fff3cd
+    style AutoRollback1 fill:#fff3cd
+    style AutoRollback2 fill:#fff3cd
+    style AutoRollback3 fill:#fff3cd
+    style AutoRollback4 fill:#fff3cd
+    style AutoRollback5 fill:#fff3cd
+
+
+

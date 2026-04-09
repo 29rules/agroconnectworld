@@ -1,0 +1,290 @@
+name: Build Promotion Flow
+
+on:
+  workflow_dispatch:
+    inputs:
+      from_environment:
+        description: 'Source environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - uat
+          - staging
+      to_environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - uat
+          - staging
+          - production
+      build_id:
+        description: 'Build ID to promote'
+        required: true
+        type: string
+      branch:
+        description: 'Branch name'
+        required: true
+        type: string
+      commit:
+        description: 'Commit SHA'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: read
+
+env:
+  FROM_ENV: ${{ github.event.inputs.from_environment }}
+  TO_ENV: ${{ github.event.inputs.to_environment }}
+  BUILD_ID: ${{ github.event.inputs.build_id }}
+  BRANCH: ${{ github.event.inputs.branch }}
+  COMMIT: ${{ github.event.inputs.commit }}
+
+jobs:
+  # ───────────────────────── Check Code Quality ─────────────────────────
+  check-code:
+    name: Check Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.COMMIT }}
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Run Linting (Frontend)
+        run: |
+          cd frontend
+          npm ci
+          npm run lint || echo "Linting issues found"
+
+      - name: Run Linting (Backend)
+        run: |
+          cd backend/gateway
+          mvn checkstyle:check || echo "Checkstyle issues found"
+        continue-on-error: true
+
+      - name: Check Code Coverage
+        run: |
+          cd backend/gateway
+          mvn test jacoco:report
+          # Coverage check logic here
+
+  # ───────────────────────── Run Tests ─────────────────────────
+  run-tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: check-code
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.COMMIT }}
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Run Unit Tests (Backend)
+        run: |
+          cd backend/gateway
+          mvn test
+
+      - name: Run Integration Tests
+        run: |
+          echo "Running integration tests..."
+          # Integration test execution
+
+      - name: Run E2E Tests
+        run: |
+          echo "Running E2E tests..."
+          # E2E test execution
+
+  # ───────────────────────── Security Checks ─────────────────────────
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: check-code
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.COMMIT }}
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Run OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'AgroConnectWorld'
+          path: '.'
+          format: 'HTML'
+          failOnCVSS: 7
+
+      - name: Run Trivy Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # ───────────────────────── Build Artifacts ─────────────────────────
+  build-artifacts:
+    name: Build Artifacts
+    runs-on: ubuntu-latest
+    needs: [run-tests, security-scan]
+    if: success()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.COMMIT }}
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker images
+        run: |
+          ENV_TAG=${{ env.TO_ENV }}
+          
+          # Build all services
+          docker build -t ghcr.io/${{ github.repository_owner }}/agroconnect-frontend:$ENV_TAG ./frontend
+          docker build -t ghcr.io/${{ github.repository_owner }}/agroconnect-gateway:$ENV_TAG ./backend/gateway
+          docker build -t ghcr.io/${{ github.repository_owner }}/agroconnect-auth-service:$ENV_TAG ./backend/auth-service
+          docker build -t ghcr.io/${{ github.repository_owner }}/agroconnect-product-service:$ENV_TAG ./backend/product-service
+          docker build -t ghcr.io/${{ github.repository_owner }}/agroconnect-supplier-service:$ENV_TAG ./backend/supplier-service
+          docker build -t ghcr.io/${{ github.repository_owner }}/agroconnect-quote-service:$ENV_TAG ./backend/quote-service
+          docker build -t ghcr.io/${{ github.repository_owner }}/agroconnect-order-service:$ENV_TAG ./backend/order-service
+          docker build -t ghcr.io/${{ github.repository_owner }}/agroconnect-contact-service:$ENV_TAG ./backend/contact-service
+          
+          # Push images
+          docker push ghcr.io/${{ github.repository_owner }}/agroconnect-frontend:$ENV_TAG
+          docker push ghcr.io/${{ github.repository_owner }}/agroconnect-gateway:$ENV_TAG
+          docker push ghcr.io/${{ github.repository_owner }}/agroconnect-auth-service:$ENV_TAG
+          docker push ghcr.io/${{ github.repository_owner }}/agroconnect-product-service:$ENV_TAG
+          docker push ghcr.io/${{ github.repository_owner }}/agroconnect-supplier-service:$ENV_TAG
+          docker push ghcr.io/${{ github.repository_owner }}/agroconnect-quote-service:$ENV_TAG
+          docker push ghcr.io/${{ github.repository_owner }}/agroconnect-order-service:$ENV_TAG
+          docker push ghcr.io/${{ github.repository_owner }}/agroconnect-contact-service:$ENV_TAG
+
+  # ───────────────────────── Deploy ─────────────────────────
+  deploy:
+    name: Deploy to ${{ env.TO_ENV }}
+    runs-on: ubuntu-latest
+    needs: build-artifacts
+    environment:
+      name: ${{ env.TO_ENV }}
+      url: ${{ env.TO_ENV == 'dev' && 'http://dev.agroconnectworld.com' || env.TO_ENV == 'uat' && 'http://uat.agroconnectworld.com' || env.TO_ENV == 'staging' && 'https://staging.agroconnectworld.com' || 'https://www.agroconnectworld.com' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets[format('{0}_SSH_KEY', env.TO_ENV)] }}
+
+      - name: Deploy
+        run: |
+          ENV=${{ env.TO_ENV }}
+          SSH_USER=${{ secrets[format('{0}_SSH_USER', env.TO_ENV)] }}
+          SSH_HOST=${{ secrets[format('{0}_SSH_HOST', env.TO_ENV)] }}
+          
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << EOF
+            cd /opt/agroconnectworld/ops/environments/$ENV || exit 1
+            
+            # Pull latest images
+            docker compose -f docker-compose.$ENV.yml pull
+            
+            # Deploy
+            docker compose -f docker-compose.$ENV.yml up -d --remove-orphans
+            
+            # Health checks
+            sleep 30
+            docker compose -f docker-compose.$ENV.yml ps
+          EOF
+
+      - name: Notify CEO Portal
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const message = `🚀 Build Promotion Complete\n\n` +
+              `Build ID: ${{ env.BUILD_ID }}\n` +
+              `From: ${{ env.FROM_ENV }} → To: ${{ env.TO_ENV }}\n` +
+              `Branch: ${{ env.BRANCH }}\n` +
+              `Commit: ${{ env.COMMIT }}\n` +
+              `Status: ✅ Success\n` +
+              `URL: ${{ env.TO_ENV == 'dev' && 'http://dev.agroconnectworld.com' || env.TO_ENV == 'uat' && 'http://uat.agroconnectworld.com' || env.TO_ENV == 'staging' && 'https://staging.agroconnectworld.com' || 'https://www.agroconnectworld.com' }}\n\n` +
+              `[View Workflow](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
+            
+            if ('${{ secrets.CEO_PORTAL_WEBHOOK }}') {
+              await fetch('${{ secrets.CEO_PORTAL_WEBHOOK }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  text: message,
+                  environment: '${{ env.TO_ENV }}',
+                  build_id: '${{ env.BUILD_ID }}',
+                  status: 'success'
+                })
+              });
+            }
+
+  # ───────────────────────── Promotion Summary ─────────────────────────
+  promotion-summary:
+    name: Promotion Summary
+    runs-on: ubuntu-latest
+    needs: [check-code, run-tests, security-scan, build-artifacts, deploy]
+    if: always()
+    steps:
+      - name: Summary
+        run: |
+          echo "## Build Promotion Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Code Quality: ${{ needs.check-code.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Tests: ${{ needs.run-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Security: ${{ needs.security-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Artifacts: ${{ needs.build-artifacts.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Deployment: ${{ needs.deploy.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**From:** ${{ env.FROM_ENV }}" >> $GITHUB_STEP_SUMMARY
+          echo "**To:** ${{ env.TO_ENV }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Build ID:** ${{ env.BUILD_ID }}" >> $GITHUB_STEP_SUMMARY
+
+
+

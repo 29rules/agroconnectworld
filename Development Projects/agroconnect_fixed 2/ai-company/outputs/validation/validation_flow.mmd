@@ -1,0 +1,98 @@
+graph TB
+    subgraph "Input"
+        OUTPUT[Agent Output<br/>JSON String]
+        AGENT_NAME[Agent Name]
+    end
+    
+    subgraph "Validation Layers"
+        JSON_VALID[JSON Structure Validator]
+        SEMANTIC_VALID[Semantic Validator]
+        ZERO_IMPACT[Zero-Impact Compliance]
+        CODE_MOD[Code Modification Check]
+        STRUCT_OUT[Structured Output Check]
+        QUALITY[Content Quality Check]
+    end
+    
+    subgraph "Validation Checks"
+        JSON_SYNTAX[JSON Syntax Check]
+        REQUIRED_FIELDS[Required Fields Check]
+        FIELD_TYPES[Field Type Check]
+        EMPTY_FIELDS[Empty Fields Check]
+        MISSING_SECTIONS[Missing Sections Check]
+        PATTERN_MATCH[Pattern Matching]
+        KEYWORD_DETECT[Keyword Detection]
+        SCHEMA_VALID[Schema Validation]
+        LENGTH_CHECK[Length Check]
+        PLACEHOLDER_CHECK[Placeholder Check]
+    end
+    
+    subgraph "Compliance Check"
+        COMPLIANCE[Compliance Check Builder]
+        ZERO_IMPACT_RESULT[Zero-Impact Result]
+        NO_CODE_MOD_RESULT[No Code Mod Result]
+        STRUCT_OUT_RESULT[Structured Output Result]
+    end
+    
+    subgraph "Output"
+        RESULT[ValidationResult]
+        ERRORS[Validation Errors]
+        WARNINGS[Validation Warnings]
+        COMPLIANCE_SUMMARY[Compliance Summary]
+    end
+    
+    %% Flow
+    OUTPUT --> JSON_VALID
+    AGENT_NAME --> JSON_VALID
+    
+    JSON_VALID --> JSON_SYNTAX
+    JSON_SYNTAX --> REQUIRED_FIELDS
+    REQUIRED_FIELDS --> FIELD_TYPES
+    
+    JSON_VALID --> SEMANTIC_VALID
+    SEMANTIC_VALID --> EMPTY_FIELDS
+    SEMANTIC_VALID --> MISSING_SECTIONS
+    
+    OUTPUT --> ZERO_IMPACT
+    ZERO_IMPACT --> PATTERN_MATCH
+    PATTERN_MATCH --> ZERO_IMPACT_RESULT
+    
+    OUTPUT --> CODE_MOD
+    CODE_MOD --> KEYWORD_DETECT
+    KEYWORD_DETECT --> NO_CODE_MOD_RESULT
+    
+    OUTPUT --> STRUCT_OUT
+    STRUCT_OUT --> SCHEMA_VALID
+    SCHEMA_VALID --> STRUCT_OUT_RESULT
+    
+    OUTPUT --> QUALITY
+    QUALITY --> LENGTH_CHECK
+    QUALITY --> PLACEHOLDER_CHECK
+    
+    ZERO_IMPACT_RESULT --> COMPLIANCE
+    NO_CODE_MOD_RESULT --> COMPLIANCE
+    STRUCT_OUT_RESULT --> COMPLIANCE
+    COMPLIANCE --> COMPLIANCE_SUMMARY
+    
+    JSON_VALID --> RESULT
+    SEMANTIC_VALID --> RESULT
+    ZERO_IMPACT --> RESULT
+    CODE_MOD --> RESULT
+    STRUCT_OUT --> RESULT
+    QUALITY --> RESULT
+    
+    RESULT --> ERRORS
+    RESULT --> WARNINGS
+    RESULT --> COMPLIANCE_SUMMARY
+    
+    %% Styling
+    style JSON_VALID fill:#4ecdc4,stroke:#2d9cdb,stroke-width:2px
+    style SEMANTIC_VALID fill:#45b7d1,stroke:#2d9cdb,stroke-width:2px
+    style ZERO_IMPACT fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
+    style CODE_MOD fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
+    style STRUCT_OUT fill:#ffeaa7,stroke:#fdcb6e,stroke-width:2px
+    style QUALITY fill:#96ceb4,stroke:#2d9cdb,stroke-width:2px
+    style COMPLIANCE fill:#fd79a8,stroke:#e84393,stroke-width:2px
+    style RESULT fill:#55efc4,stroke:#00b894,stroke-width:3px
+
+
+

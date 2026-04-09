@@ -1,0 +1,46 @@
+graph TD
+    Start([Self-Improvement Cycle Triggered]) --> Analysis[SelfAnalysisAgent<br/>Analyze Codebase]
+    
+    Analysis --> Health[CodeHealthMonitor<br/>Evaluate Health Score]
+    Analysis --> Drift[ArchitectureDriftDetector<br/>Detect Drift]
+    Analysis --> Opportunities[FeatureOpportunityFinder<br/>Find Opportunities]
+    
+    Health --> Architect[ArchitectAgent<br/>Design Improvements]
+    Drift --> Architect
+    Opportunities --> Architect
+    
+    Architect --> CTO[CTOAgent<br/>Review & Approve]
+    
+    CTO -->|Approved| Engineer[EngineerAgent<br/>Generate Patches]
+    CTO -->|Rejected| EndReject([Cycle Ended<br/>CTO Rejected])
+    
+    Engineer --> ImpactGuard[ImpactGuard<br/>Validate Changes]
+    
+    ImpactGuard -->|ZERO_IMPACT| SuggestionsOnly([Suggestions Only<br/>No Changes Applied])
+    ImpactGuard -->|CONTROLLED_IMPACT| ValidateTests[Run Tests<br/>Generate Patch Diff]
+    ImpactGuard -->|FULL_IMPACT| ValidateApproval[Supervisor Approval]
+    
+    ValidateTests --> TestsPass{Tests Pass?}
+    TestsPass -->|Yes| QA[QAAgent<br/>Generate Test Updates]
+    TestsPass -->|No| WarnTests([Warning:<br/>Tests Failed])
+    
+    ValidateApproval --> Supervisor[SupervisorAgent<br/>Final Approval]
+    QA --> Supervisor
+    
+    Supervisor -->|Approved| Apply[Apply Safe Changes<br/>via Code Tools]
+    Supervisor -->|Rejected| EndReject
+    
+    Apply --> Commit[GitCommitTool<br/>Commit Changes]
+    
+    Commit --> Log[Log All Changes<br/>Audit Trail]
+    
+    Log --> EndSuccess([Cycle Completed<br/>Improvements Applied])
+    
+    style Start fill:#e1f5ff
+    style EndSuccess fill:#d4edda
+    style EndReject fill:#f8d7da
+    style SuggestionsOnly fill:#fff3cd
+    style WarnTests fill:#fff3cd
+
+
+
